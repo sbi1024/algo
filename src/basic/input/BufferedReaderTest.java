@@ -76,5 +76,38 @@ public class BufferedReaderTest {
             System.out.println(N);
             System.out.println(Arrays.deepToString(input));
         }
+
+        // 첫 줄에 가로(N), 세로(M) 각각 주어질 때
+        {
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            int N = Integer.parseInt(st.nextToken());
+            int M = Integer.parseInt(st.nextToken());
+
+            int[][] input = new int[N][M];
+
+            for (int i = 0; i < N; i++) {
+                String str = br.readLine();
+                st = new StringTokenizer(str);
+                for (int j = 0; j < M; j++) {
+                    input[i][j] = Integer.parseInt(st.nextToken());
+                }
+            }
+            System.out.println(N);
+
+            // 1 개씩 확인
+            for (int i = 0; i < N; i++) {
+                for (int j = 0; j < M; j++) {
+                    System.out.print(input[i][j] + " ");
+                }
+                System.out.println();
+            }
+
+            // 라인 단위로 확인
+            for (int i = 0; i < N; i++) {
+                System.out.println(Arrays.toString(input[i]));
+            }
+//
+        }
     }
 }
