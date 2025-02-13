@@ -527,84 +527,241 @@
 //}
 
 
+//import java.io.*;
+//
+//public class Main {
+//
+//    public static void main(String[] args) throws IOException {
+//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+//
+//        // 입력값을 선언함
+//        int totalWeight = Integer.parseInt(br.readLine());
+//        final int FIVE_VALUE = 5; // 나눌 값을 상수로 정의
+//        final int THREE_VALUE = 3; // 나눌 값을 상수로 정의
+//        int result = 0; // 출력할 결과값 선언
+//
+//        // [핵심 아이디이]
+//        // 5kg 으로 나누어서 배달하는게 가장 적은 개수로 배달하는 경우이다.
+//        // 하지만, 5kg로 나누어 배달하는 경우만 존재하는 것이 아니기에, 5kg로 나누어 지지 않는 경우
+//        // 3kg로 하나 배달한다는 가정하에 총 무게 (totalWeight) 에서 -3 처리 후에, 다시 5kg로 나누어 지는지 확인
+//        while (totalWeight > 0) {
+//            int fiveRemain = totalWeight % FIVE_VALUE; // 나머지 값
+//            int fiveMod = totalWeight / FIVE_VALUE; // 몫 값
+//            // 만약 5kg로 나누어 떨어진다면
+//            if (fiveRemain == 0) {
+//                // 몫 만큼 결과값 + 후 반복문 종료
+//                result += fiveMod;
+//                break;
+//            }
+//            // 위 조건을 만족하지 않는다는 것은, 5kg로 나누어 떨어지지 않는다는 것
+//            // 3kg 하나를 배달해야 함을 알 수 있음.
+//            totalWeight -= THREE_VALUE;
+//            result++;
+//        }
+//        // 만약에 총 무게가 0보다 작다는건, 5,3kg로 배달할수 없음을 알 수 있음
+//        if (totalWeight < 0)result = -1; // -1로 반환
+//
+//        // 결과값 출력
+//        bw.write(result + "");
+//        bw.flush();
+//        bw.close();
+//        br.close();
+//    }
+//}
 
-/**
- * 테스트 1 〉	통과 (2.16ms, 70.5MB)
- * 테스트 2 〉	통과 (2.48ms, 91.7MB)
- * 테스트 3 〉	통과 (2.50ms, 90.2MB)
- * 테스트 4 〉	통과 (2.35ms, 78.5MB)
- * 테스트 5 〉	통과 (8.79ms, 87.7MB)
- * 테스트 6 〉	통과 (5.89ms, 92.7MB)
- * 테스트 7 〉	통과 (7.54ms, 87.8MB)
- * 테스트 8 〉	통과 (7.86ms, 99.3MB)
- * 테스트 9 〉	통과 (5.98ms, 77.8MB)
- * 테스트 10 〉	통과 (6.39ms, 88.4MB)
- * 테스트 11 〉	통과 (4.77ms, 75.2MB)
- * 테스트 12 〉	통과 (5.57ms, 88.2MB)
- * 테스트 13 〉	통과 (5.46ms, 84.4MB)
- * 테스트 14 〉	통과 (6.52ms, 83.7MB)
- * 테스트 15 〉	통과 (2.77ms, 78.2MB)
- * 테스트 16 〉	통과 (2.97ms, 73.6MB)
- * 테스트 17 〉	통과 (3.09ms, 77.3MB)
- * 테스트 18 〉	통과 (3.46ms, 86.3MB)
- * 테스트 19 〉	통과 (6.31ms, 92.6MB)
- * 테스트 20 〉	통과 (8.78ms, 74.1MB)
- * 테스트 21 〉	통과 (10.98ms, 77.4MB)
- * 테스트 22 〉	통과 (7.81ms, 84.3MB)
- * 테스트 23 〉	통과 (8.30ms, 73.6MB)
- * 테스트 24 〉	통과 (6.82ms, 74MB)
- * 테스트 25 〉	통과 (127.77ms, 145MB)
- * 테스트 26 〉	통과 (98.71ms, 159MB)
- * 테스트 27 〉	통과 (118.94ms, 149MB)
- * 테스트 28 〉	통과 (106.72ms, 174MB)
- * 테스트 29 〉	통과 (114.59ms, 149MB)
- * 테스트 30 〉	통과 (108.81ms, 173MB)
- * 테스트 31 〉	통과 (100.62ms, 143MB)
- * 테스트 32 〉	통과 (121.10ms, 144MB)
- */
+// 4790
+// 1000 4 = 4000, 790
+// 500 1 = 500, 290
+// 100 2 = 200. 90
+// 50 1 = 50, 40
+// 10 4 = 40, 0
+
+
+//import java.io.*;
+//import java.util.Arrays;
+//import java.util.StringTokenizer;
+//
+//public class Main {
+//    public static void main(String[] args) throws IOException {
+//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+//
+//        int forCount = Integer.parseInt(br.readLine());
+//        int[][] array = new int[forCount][2];
+//        for (int i = 0; i < forCount; i++) {
+//            StringTokenizer st = new StringTokenizer(br.readLine());
+//            array[i][0] = Integer.parseInt(st.nextToken());
+//            array[i][1] = Integer.parseInt(st.nextToken());
+//        }
+//
+//        // 회의 정렬: 끝나는 시간 기준, 끝나는 시간이 같으면 시작 시간 기준
+//        Arrays.sort(array, (a, b) -> {
+//            if (a[1] == b[1]) return Integer.compare(a[0], b[0]);
+//            return Integer.compare(a[1], b[1]);
+//        });
+//
+//        System.out.println(Arrays.deepToString(array));
+//
+//
+//        bw.flush();
+//        bw.close();
+//        br.close();
+//    }
+//}
+
+
+//import java.io.*;
+//
+//public class Main {
+//    public static void main(String[] args) throws IOException {
+//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+//
+//        int input = Integer.parseInt(br.readLine());
+//        int result = factorial(input);
+//
+//        bw.write(result + "");
+//        bw.flush();
+//        bw.close();
+//        br.close();
+//    }
+//
+//    public static int factorial(int n) {
+//        if (n == 1) {
+//            return n;
+//        }
+//        return n * factorial(n - 1);
+//    }
+//}
+
+//import java.io.*;
+//import java.util.StringTokenizer;
+//
+//public class Main {
+//    public static void main(String[] args) throws IOException {
+//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+//        StringTokenizer st;
+//        int forCount = Integer.parseInt(br.readLine());
+//        int[] array = new int[forCount + 1]; // 0번은 더미 데이터
+//        for (int i = 0; i < forCount - 1; i++) {
+//            st = new StringTokenizer(br.readLine());
+//            int value1 = Integer.parseInt(st.nextToken()); // 부모 노드 값
+//            int value2 = Integer.parseInt(st.nextToken()); // 노드 값
+//            array[value2] = value1;
+//        }
+//
+//        for (int i = 0; i < array.length; i++) {
+//            System.out.println(i + 1 + " : " + array[i + 1]);
+//        }
+//
+//        bw.flush();
+//        bw.close();
+//        br.close();
+//    }
+//}
 
 import java.io.*;
+import java.util.ArrayDeque;
+import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
+    static int first;
+    static int second;
+    static Queue<int[]> queue = new ArrayDeque<>();
+    static int[][] array;
+    static int[][] days;
+
+    // 상 하 좌 우
+    static int[] dx = {0, 0, -1, 1};
+    static int[] dy = {-1, 1, 0, 0};
+
     public static void main(String[] args) throws IOException {
+        // 입츨력 스트림 변수 선언
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        String input = br.readLine();
-        StringTokenizer st = new StringTokenizer(input);
+        // 입력받는 문자열 자르기 위한 StringTokenizer 객체 생성
+        StringTokenizer st;
 
-        int forCount = Integer.parseInt(st.nextToken());
-        int goalCount = Integer.parseInt(st.nextToken());
-        int MAX_VALUE = Integer.MIN_VALUE;
-        int[] array = new int[forCount];
+        // 입력값 자르기
+        st = new StringTokenizer(br.readLine());
+        first = Integer.parseInt(st.nextToken()); // 행
+        second = Integer.parseInt(st.nextToken()); // 열
+        array = new int[second][first]; // 토마토 상자 배열
+        days = new int[second][first]; // 토마토 상자에서 익은 토마토가 언제 익는지 체크하기 위한 변수 선언
 
-        for (int i = 0; i < forCount; i++) {
-            array[i] = Integer.parseInt(br.readLine());
-            MAX_VALUE = Math.max(array[i], MAX_VALUE);
+        // 입력값 받은것을 토마토 상자에 값을 넣음
+        for (int i = 0; i < second; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < first; j++) {
+                int value = Integer.parseInt(st.nextToken());
+                array[i][j] = value;
+                // 만약에 익은 토마토 값이라면
+                if (value == 1) {
+                    // bfs 에서 탐색하기 위한 익은 토마토의 위치 좌표값을 넣음
+                    queue.add(new int[]{i, j});
+                    // 익은 토마토는 0일로 설정
+                    // 차후에 bfs 로 상하좌우 전염시키면서 몇일쨰 날짜에 익게되었는지 마킹
+                    days[i][j] = 0;
+                } else if (value == 0) {
+                    // 익지않은 토마토니까 일단 -1로 할당함
+                    // 나중에 어차피 bfs 에서 몇일에 익은 토마토인지 날짜값을 할당함
+                    days[i][j] = -1;
+                }
+            }
         }
 
-        long left = 1;
-        long right = MAX_VALUE;
-        long result = 0;
+        // bfs 메서드 호출
+        int result = bfs();
 
-        while (left <= right) {
-            long mid = (left + right) / 2;
-            long count = 0;
-            for (int i = 0; i < forCount; i++) {
-                count += (array[i] / mid);
-            }
-
-            if (count >= goalCount) {
-                result = mid;
-                left = mid + 1;
-            } else {
-                right = mid - 1;
-            }
-        }
-
+        // 결과값 출력
         bw.write(result + "");
         bw.flush();
         bw.close();
         br.close();
+    }
+
+    static int bfs() {
+        // bfs 의 기본 뼈대, 반복문을 순회하면서 큐에 담긴 익은 토마토의 좌표값을 꺼내서 상하 좌우값을 전염시킴
+        while (!queue.isEmpty()) {
+            // 큐에서 값을 꺼내기
+            int[] poll = queue.poll();
+            int x = poll[0];
+            int y = poll[1];
+            // 반복문을 통해 상하좌우 값 계산
+            for (int i = 0; i < 4; i++) {
+                int nx = x + dx[i];
+                int ny = y + dy[i];
+                // 만약 2차원 배열에서 벗어나는 값이 아니거나, 익지않은 토마토인 경우는 따로 체크하지 않음
+                if (nx >= 0 && nx < second && ny >= 0 && ny < first && days[nx][ny] == -1) {
+                    queue.add(new int[]{nx, ny});
+                    days[nx][ny] = days[x][y] + 1;
+                }
+            }
+        }
+
+        // 만약에 days 가 -1이 존재한다면, 익을수 없는 토마토가 존재한다고 판단.
+        for (int i = 0; i < second; i++) {
+            for (int j = 0; j < first; j++) {
+                if (days[i][j] == -1) {
+                    return -1;
+                }
+            }
+        }
+
+        // 이제 days 배열에서 가장 큰 값을 찾음
+        int MAX_VALUE = Integer.MIN_VALUE;
+        for (int i = 0; i < second; i++) {
+            for (int j = 0; j < first; j++) {
+                int value = days[i][j];
+                if (MAX_VALUE < value) {
+                    MAX_VALUE = value;
+                }
+            }
+        }
+
+        return MAX_VALUE;
     }
 }
