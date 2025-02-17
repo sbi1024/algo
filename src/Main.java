@@ -662,106 +662,276 @@
 //    }
 //}
 
+//import java.io.*;
+//import java.util.ArrayDeque;
+//import java.util.Queue;
+//import java.util.StringTokenizer;
+//
+//public class Main {
+//    static int first;
+//    static int second;
+//    static Queue<int[]> queue = new ArrayDeque<>();
+//    static int[][] array;
+//    static int[][] days;
+//
+//    // 상 하 좌 우
+//    static int[] dx = {0, 0, -1, 1};
+//    static int[] dy = {-1, 1, 0, 0};
+//
+//    public static void main(String[] args) throws IOException {
+//        // 입츨력 스트림 변수 선언
+//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+//        // 입력받는 문자열 자르기 위한 StringTokenizer 객체 생성
+//        StringTokenizer st;
+//
+//        // 입력값 자르기
+//        st = new StringTokenizer(br.readLine());
+//        first = Integer.parseInt(st.nextToken()); // 행
+//        second = Integer.parseInt(st.nextToken()); // 열
+//        array = new int[second][first]; // 토마토 상자 배열
+//        days = new int[second][first]; // 토마토 상자에서 익은 토마토가 언제 익는지 체크하기 위한 변수 선언
+//
+//        // 입력값 받은것을 토마토 상자에 값을 넣음
+//        for (int i = 0; i < second; i++) {
+//            st = new StringTokenizer(br.readLine());
+//            for (int j = 0; j < first; j++) {
+//                int value = Integer.parseInt(st.nextToken());
+//                array[i][j] = value;
+//                // 만약에 익은 토마토 값이라면
+//                if (value == 1) {
+//                    // bfs 에서 탐색하기 위한 익은 토마토의 위치 좌표값을 넣음
+//                    queue.add(new int[]{i, j});
+//                    // 익은 토마토는 0일로 설정
+//                    // 차후에 bfs 로 상하좌우 전염시키면서 몇일쨰 날짜에 익게되었는지 마킹
+//                    days[i][j] = 0;
+//                } else if (value == 0) {
+//                    // 익지않은 토마토니까 일단 -1로 할당함
+//                    // 나중에 어차피 bfs 에서 몇일에 익은 토마토인지 날짜값을 할당함
+//                    days[i][j] = -1;
+//                }
+//            }
+//        }
+//
+//        // bfs 메서드 호출
+//        int result = bfs();
+//
+//        // 결과값 출력
+//        bw.write(result + "");
+//        bw.flush();
+//        bw.close();
+//        br.close();
+//    }
+//
+//    static int bfs() {
+//        // bfs 의 기본 뼈대, 반복문을 순회하면서 큐에 담긴 익은 토마토의 좌표값을 꺼내서 상하 좌우값을 전염시킴
+//        while (!queue.isEmpty()) {
+//            // 큐에서 값을 꺼내기
+//            int[] poll = queue.poll();
+//            int x = poll[0];
+//            int y = poll[1];
+//            // 반복문을 통해 상하좌우 값 계산
+//            for (int i = 0; i < 4; i++) {
+//                int nx = x + dx[i];
+//                int ny = y + dy[i];
+//                // 만약 2차원 배열에서 벗어나는 값이 아니거나, 익지않은 토마토인 경우는 따로 체크하지 않음
+//                if (nx >= 0 && nx < second && ny >= 0 && ny < first && days[nx][ny] == -1) {
+//                    queue.add(new int[]{nx, ny});
+//                    days[nx][ny] = days[x][y] + 1;
+//                }
+//            }
+//        }
+//
+//        // 만약에 days 가 -1이 존재한다면, 익을수 없는 토마토가 존재한다고 판단.
+//        for (int i = 0; i < second; i++) {
+//            for (int j = 0; j < first; j++) {
+//                if (days[i][j] == -1) {
+//                    return -1;
+//                }
+//            }
+//        }
+//
+//        // 이제 days 배열에서 가장 큰 값을 찾음
+//        int MAX_VALUE = Integer.MIN_VALUE;
+//        for (int i = 0; i < second; i++) {
+//            for (int j = 0; j < first; j++) {
+//                int value = days[i][j];
+//                if (MAX_VALUE < value) {
+//                    MAX_VALUE = value;
+//                }
+//            }
+//        }
+//
+//        return MAX_VALUE;
+//    }
+//}
+
+//import java.io.*;
+//import java.util.Arrays;
+//import java.util.StringTokenizer;
+//
+//public class Main {
+//    static int V, E, SUM;
+//    static Edge[] edges;
+//    static int[] parent;
+//
+//    public static void main(String[] args) throws IOException {
+//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+//        StringTokenizer st = new StringTokenizer(br.readLine());
+//        V = Integer.parseInt(st.nextToken()); // 정점의 개수
+//        E = Integer.parseInt(st.nextToken()); // 간선의 개수
+//
+//        parent = new int[V + 1]; // 정점 배열 초기화 (문제에서 정점은 0번이 아니라 1번부터 시작임)
+//        edges = new Edge[E]; // 간선 배열 초기화
+//
+//        // 입력값으로 받은 값 Edge 객체 생성처리
+//        for (int i = 0; i < E; i++) {
+//            st = new StringTokenizer(br.readLine());
+//            int v1 = Integer.parseInt(st.nextToken());
+//            int v2 = Integer.parseInt(st.nextToken());
+//            int co = Integer.parseInt(st.nextToken());
+//            // Edge 객체를 생성해서 배열에 담음
+//            edges[i] = new Edge(v1, v2, co);
+//        }
+//        // 각 정점의 부모를 자기 자신으로 초기설정
+//        makeSet();
+//        // 가중치 값을 기준으로 오름차순 정렬
+//        Arrays.sort(edges, (o1, o2) -> o1.c - o2.c);
+//        // count 변수 선언 이유 : 선택한 간선의 수가 정점의 수 - 1값과 같을때 까지만 반복문이 실행되어야 함
+//        int count = 0;
+//        for (int i = 0; i < edges.length; i++) {
+//            Edge edge = edges[i];
+//            // union 메서드 호출하여 같은 집합인지 확인, 서로소인지를 확인하는 듯 함
+//            // 명확하지는 않음.
+//            if (union(edge.v1, edge.v2)) {
+//                // 가중치 값을 합산 진행
+//                SUM += edge.c;
+//                count++;
+//                // 만약 선택한 간선의 개수가 정점의 개수 - 1과 같으면 탈출
+//                if (count == V - 1) {
+//                    break;
+//                }
+//            }
+//        }
+//
+//        // 결과값 출력
+//        bw.write(SUM + "");
+//        bw.flush();
+//        bw.close();
+//        br.close();
+//    }
+//
+//    // 자기자신을 부모 노드로 설정하는 메서드
+//    static void makeSet() {
+//        for (int i = 1; i <= V; i++) {
+//            parent[i] = i;
+//        }
+//    }
+//
+//    // 특정값의 부모를 찾는 메서드
+//    static int findSet(int x) {
+//        if (parent[x] == x) return x;
+//        return parent[x] = findSet(parent[x]);
+//    }
+//
+//    // 특정 값 두가지의 부모가 같은지 다른지 확인하는 메서드
+//    // 만약 다르다면, 큰값이 작은값의 부모값을 할당받음, 그 반대의 경우 반대 처리 진행
+//    static boolean union(int x, int y) {
+//        int findX = findSet(x);
+//        int findY = findSet(y);
+//        if (findX == findY) return false;
+//        if (findX < findY) parent[findY] = findX;
+//        else parent[findX] = findY;
+//        return true;
+//    }
+//
+//    // 내뷰 클래스 선언
+//    static class Edge {
+//        int v1, v2, c;
+//
+//        public Edge(int v1, int v2, int c) {
+//            this.v1 = v1;
+//            this.v2 = v2;
+//            this.c = c;
+//        }
+//
+//        @Override
+//        public String toString() {
+//            return "Edge{" +
+//                    "v1=" + v1 +
+//                    ", v2=" + v2 +
+//                    ", c=" + c +
+//                    '}';
+//        }
+//    }
+//}
+
+
 import java.io.*;
-import java.util.ArrayDeque;
-import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
-    static int first;
-    static int second;
-    static Queue<int[]> queue = new ArrayDeque<>();
-    static int[][] array;
-    static int[][] days;
-
-    // 상 하 좌 우
-    static int[] dx = {0, 0, -1, 1};
-    static int[] dy = {-1, 1, 0, 0};
+    static int R, C; // 가로 세로
+    static boolean[] alphaVisit = new boolean[26]; // 알파벳 배열 선언 (방문 여부 확인)
+    static int result; // 말이 지나온 칸 수
+    static int[] dx = {-1, 1, 0, 0};
+    static int[] dy = {0, 0, -1, 1};
+    static char[][] alphaBoard; // 입력값을 담을 배열
 
     public static void main(String[] args) throws IOException {
-        // 입츨력 스트림 변수 선언
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        // 입력받는 문자열 자르기 위한 StringTokenizer 객체 생성
-        StringTokenizer st;
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        // 입력값 자르기
-        st = new StringTokenizer(br.readLine());
-        first = Integer.parseInt(st.nextToken()); // 행
-        second = Integer.parseInt(st.nextToken()); // 열
-        array = new int[second][first]; // 토마토 상자 배열
-        days = new int[second][first]; // 토마토 상자에서 익은 토마토가 언제 익는지 체크하기 위한 변수 선언
+        // 가로 세로 변수 초기화
+        R = Integer.parseInt(st.nextToken());
+        C = Integer.parseInt(st.nextToken());
 
-        // 입력값 받은것을 토마토 상자에 값을 넣음
-        for (int i = 0; i < second; i++) {
-            st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < first; j++) {
-                int value = Integer.parseInt(st.nextToken());
-                array[i][j] = value;
-                // 만약에 익은 토마토 값이라면
-                if (value == 1) {
-                    // bfs 에서 탐색하기 위한 익은 토마토의 위치 좌표값을 넣음
-                    queue.add(new int[]{i, j});
-                    // 익은 토마토는 0일로 설정
-                    // 차후에 bfs 로 상하좌우 전염시키면서 몇일쨰 날짜에 익게되었는지 마킹
-                    days[i][j] = 0;
-                } else if (value == 0) {
-                    // 익지않은 토마토니까 일단 -1로 할당함
-                    // 나중에 어차피 bfs 에서 몇일에 익은 토마토인지 날짜값을 할당함
-                    days[i][j] = -1;
-                }
+        // 전역변수 초기화
+        alphaBoard = new char[R][C];
+        for (int i = 0; i < R; i++) {
+            char[] charArray = br.readLine().toCharArray();
+            for (int j = 0; j < charArray.length; j++) {
+                alphaBoard[i][j] = charArray[j];
             }
         }
 
-        // bfs 메서드 호출
-        int result = bfs();
-
-        // 결과값 출력
+        // 메서드 호출
+        // 문제에서 말의 시작점이 1행 1열에 놓여있는데, 좌측 상단의 칸도 포함된다고 했음
+        dfs(0, 0, 1);
         bw.write(result + "");
         bw.flush();
         bw.close();
         br.close();
     }
 
-    static int bfs() {
-        // bfs 의 기본 뼈대, 반복문을 순회하면서 큐에 담긴 익은 토마토의 좌표값을 꺼내서 상하 좌우값을 전염시킴
-        while (!queue.isEmpty()) {
-            // 큐에서 값을 꺼내기
-            int[] poll = queue.poll();
-            int x = poll[0];
-            int y = poll[1];
-            // 반복문을 통해 상하좌우 값 계산
-            for (int i = 0; i < 4; i++) {
-                int nx = x + dx[i];
-                int ny = y + dy[i];
-                // 만약 2차원 배열에서 벗어나는 값이 아니거나, 익지않은 토마토인 경우는 따로 체크하지 않음
-                if (nx >= 0 && nx < second && ny >= 0 && ny < first && days[nx][ny] == -1) {
-                    queue.add(new int[]{nx, ny});
-                    days[nx][ny] = days[x][y] + 1;
-                }
+    // 이 문제는 dfs 를 사용해야함
+    // 이유 : 백트래킹을 사용해야함에도 이유가 있지만, 말이 상하좌우로 움직이면서 지금까지 나온 알파벳과는 다른 알파벳을 선택할 수 있어야 하기 때문
+    static void dfs(int y, int x, int count) {
+        // 백트래킹을 이용한 문제풀이 방식이기에 이전에 시도한 방식이
+        // 더 많은 칸을 이동했을수도 있음
+        // 그렇게에 최대값을 호출시에 무조건 담아놔야 함
+        result = Math.max(result, count);
+
+        // 현재 들어온 지점은 방문 처리 시킴
+        alphaVisit[alphaBoard[y][x] - 'A'] = true;
+
+        // 상 하 좌 우 값 탐색을 위한 반복문
+        for (int i = 0; i < 4; i++) {
+            // 현재 지점에서 갈 수 있는 좌표값 계싼
+            int ny = y + dy[i];
+            int nx = x + dx[i];
+
+            // 상하좌우 격자에서 인덱스가 벗어나지 않으면서, 이동하고자 하는 좌표의 알파벳이 방문한적 없는 알파벳인 경우
+            if (ny >= 0 && ny < R && nx >= 0 && nx < C
+                    && !alphaVisit[alphaBoard[ny][nx] - 'A']) {
+                // dfs 재호출
+                dfs(ny, nx, count + 1);
             }
         }
-
-        // 만약에 days 가 -1이 존재한다면, 익을수 없는 토마토가 존재한다고 판단.
-        for (int i = 0; i < second; i++) {
-            for (int j = 0; j < first; j++) {
-                if (days[i][j] == -1) {
-                    return -1;
-                }
-            }
-        }
-
-        // 이제 days 배열에서 가장 큰 값을 찾음
-        int MAX_VALUE = Integer.MIN_VALUE;
-        for (int i = 0; i < second; i++) {
-            for (int j = 0; j < first; j++) {
-                int value = days[i][j];
-                if (MAX_VALUE < value) {
-                    MAX_VALUE = value;
-                }
-            }
-        }
-
-        return MAX_VALUE;
+        // 위 반복문을 통해 dfs 재귀호출이 이루어지지 않는다라는 것은 백 트래킹이 이루어 져야 한다는 것을 뜻함
+        // 현재 좌표 방문을 false 처리
+        alphaVisit[alphaBoard[y][x] - 'A'] = false;
     }
 }
