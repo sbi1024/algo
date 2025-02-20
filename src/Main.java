@@ -868,70 +868,802 @@
 //}
 
 
+//import java.io.*;
+//import java.util.StringTokenizer;
+//
+//public class Main {
+//    static int R, C; // 가로 세로
+//    static boolean[] alphaVisit = new boolean[26]; // 알파벳 배열 선언 (방문 여부 확인)
+//    static int result; // 말이 지나온 칸 수
+//    static int[] dx = {-1, 1, 0, 0};
+//    static int[] dy = {0, 0, -1, 1};
+//    static char[][] alphaBoard; // 입력값을 담을 배열
+//
+//    public static void main(String[] args) throws IOException {
+//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+//        StringTokenizer st = new StringTokenizer(br.readLine());
+//
+//        // 가로 세로 변수 초기화
+//        R = Integer.parseInt(st.nextToken());
+//        C = Integer.parseInt(st.nextToken());
+//
+//        // 전역변수 초기화
+//        alphaBoard = new char[R][C];
+//        for (int i = 0; i < R; i++) {
+//            char[] charArray = br.readLine().toCharArray();
+//            for (int j = 0; j < charArray.length; j++) {
+//                alphaBoard[i][j] = charArray[j];
+//            }
+//        }
+//
+//        // 메서드 호출
+//        // 문제에서 말의 시작점이 1행 1열에 놓여있는데, 좌측 상단의 칸도 포함된다고 했음
+//        dfs(0, 0, 1);
+//        bw.write(result + "");
+//        bw.flush();
+//        bw.close();
+//        br.close();
+//    }
+//
+//    // 이 문제는 dfs 를 사용해야함
+//    // 이유 : 백트래킹을 사용해야함에도 이유가 있지만, 말이 상하좌우로 움직이면서 지금까지 나온 알파벳과는 다른 알파벳을 선택할 수 있어야 하기 때문
+//    static void dfs(int y, int x, int count) {
+//        // 백트래킹을 이용한 문제풀이 방식이기에 이전에 시도한 방식이
+//        // 더 많은 칸을 이동했을수도 있음
+//        // 그렇게에 최대값을 호출시에 무조건 담아놔야 함
+//        result = Math.max(result, count);
+//
+//        // 현재 들어온 지점은 방문 처리 시킴
+//        alphaVisit[alphaBoard[y][x] - 'A'] = true;
+//
+//        // 상 하 좌 우 값 탐색을 위한 반복문
+//        for (int i = 0; i < 4; i++) {
+//            // 현재 지점에서 갈 수 있는 좌표값 계싼
+//            int ny = y + dy[i];
+//            int nx = x + dx[i];
+//
+//            // 상하좌우 격자에서 인덱스가 벗어나지 않으면서, 이동하고자 하는 좌표의 알파벳이 방문한적 없는 알파벳인 경우
+//            if (ny >= 0 && ny < R && nx >= 0 && nx < C
+//                    && !alphaVisit[alphaBoard[ny][nx] - 'A']) {
+//                // dfs 재호출
+//                dfs(ny, nx, count + 1);
+//            }
+//        }
+//        // 위 반복문을 통해 dfs 재귀호출이 이루어지지 않는다라는 것은 백 트래킹이 이루어 져야 한다는 것을 뜻함
+//        // 현재 좌표 방문을 false 처리
+//        alphaVisit[alphaBoard[y][x] - 'A'] = false;
+//    }
+//}
+
+//import java.io.*;
+//import java.util.StringTokenizer;
+//
+//public class Main {
+//    static int row, col; // 격자판의 행과 열의 수
+//    static Shark[][] sharkMap; // 상어가 존재하는 위치를 기록하는 변수
+//    static int sharkTotalSize; // 결과값으로 도출할 낚시왕이 잡은 상어의 총 크기
+//    static int moveX = -1; // 낚시꾼이 위치한 현재 x 위치
+//    static int moveY = 0; // 낚시꾼이 위치한 현재 y 위치
+//
+//    public static void main(String[] args) throws IOException {
+//        // 입력값을 받을 stream 선언
+//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+//        StringTokenizer st = new StringTokenizer(br.readLine());
+//
+//        row = Integer.parseInt(st.nextToken()); // 격자판의 행의 개수
+//        col = Integer.parseInt(st.nextToken()); // 격자판의 열의 개수
+//        int sharkCount = Integer.parseInt(st.nextToken()); // 격자판에 존재하는 상어의 개수
+//
+//        if (sharkCount != 0) {
+//            sharkMap = new Shark[row][col]; // 상어가 어디에 존재하는지 뱅려 선언
+//            for (int i = 0; i < sharkCount; i++) {
+//                // 입력값 파싱
+//                st = new StringTokenizer(br.readLine());
+//                int indexX = Integer.parseInt(st.nextToken()); // x 좌표
+//                int indexY = Integer.parseInt(st.nextToken()); // y 좌표
+//                int speed = Integer.parseInt(st.nextToken()); // 속력
+//                int direction = Integer.parseInt(st.nextToken()); // 방향
+//                int size = Integer.parseInt(st.nextToken()); // 크기
+//                // 값 할당
+//                sharkMap[indexX - 1][indexY - 1] = new Shark(speed, direction, size);
+//            }
+//            // 문제에서 주어진 조건 메서드 실행
+//            simulation();
+//        }
+//
+//        // 결과값 출력
+//        bw.write(sharkTotalSize + "");
+//        bw.flush();
+//        bw.close();
+//        br.close();
+//    }
+//
+//    static void simulation() {
+//        // 조건문 변경이 필요할 수도 있음.
+//        while (moveX != col - 1) {
+//            // 1. 낚시왕이 오른쪽으로 한칸 이동한다.
+//            moveX++;
+//            // 2-1. 낚시왕이 있는 현재 위치에서의 상어 중에서 가장 땅과 가까운 상어를 잡는다.
+//            for (int i = 0; i < row; i++) {
+//                // 땅과 가장 가까운 상어
+//                Shark shark = sharkMap[i][moveX];
+//                // 만약 존재하지 않는다면 다음 값을 찾는다
+//                if (shark == null) continue;
+//                // 2-2. 존재한다면, 해당 위치의 상어를 격자판에서 지운다.
+//                sharkMap[i][moveX] = null;
+//                // 그 후 상어는 낚시왕이 잡은것이니, 해당 값을 sharkTotalSize 에 더한다.
+//                sharkTotalSize += shark.getSize();
+//                // break (찾으면 더이상 진행하지 않음)
+//                break;
+//            }
+//            // 3. 상어가 이동한다.
+//            moveShark();
+//        }
+//    }
+//
+//    // 상어가 이동할떄의 시물레이션 메서드
+//    static void moveShark() {
+//        // 1. 상어는 주어진 속도로 이동한다.
+//        // 2. 상어가 이동하려고 하는 칸이 격자판의 경계를 넘는 경우 방향을 반대로 바꾼 후 이동한다.
+//        // 3. 상어가 이동을 마친 후에, 한칸에 상어가 두마리 이상인 경우, 크기가 가장 큰 상어가 나머지 상어를 모두 잡아먹는다.
+//        // 방향은 1 : 위, 2 : 아래, 3 : 오른쪽, 4 : 왼쪽
+//
+//        // 임시 배열 생성
+//        // 키보인트, 새로운 배열을 생성해서 담아야함
+//        // 그 이유는, 문제에서 주어진 조건이 상어기 이동을 마치고 나서, 한칸에 상어가 두마리 이상인 경우 큰 상어가 작은 상어를 잡아먹는 조건
+//        // 결국 기존 배열의 상어 위치는 유지하고, 처리진행
+//        Shark[][] newSharkMap = new Shark[row][col];
+//
+//        // 반복문을 돌면서, 상어를 이동시킴 (차후 상어가 위치한 좌표값만 큐에 담아두고 메서드 수정을 하는게 좋아보이기는 함)
+//        for (int y = 0; y < row; y++) {
+//            for (int x = 0; x < col; x++) {
+//                Shark shark = sharkMap[y][x];
+//                // null 이라는 것은 상어가 미존재
+//                if (shark == null) continue;
+//                // null 이 아닌 경우, 상어가 존재, 해당 상어 격자를 벗어났는지 확인 및, 방향성 체크
+//
+//                int direction = shark.getDirection(); // 상어의 방향성
+//                int speed = shark.getSpeed(); // 상어의 속력
+//                int plusY = y;
+//                int plusX = x;
+//
+//                // *** 별도 처리 부분 ***
+//                for (int i = 0; i < speed; i++) {
+//                    if (direction == 1) {
+//                        // 위
+//                        if (plusY == 0) {
+//                            direction = 2; // 아래로 변경
+//                        } else {
+//                            plusY--;
+//                            continue;
+//                        }
+//                        plusY++;
+//                    }
+//                    else if (direction == 2) {
+//                        // 아래
+//                        if (plusY == row - 1) {
+//                            direction = 1; // 위로 변경
+//                        } else {
+//                            plusY++;
+//                            continue;
+//                        }
+//                        plusY--;
+//                    }
+//                    else if (direction == 3) {
+//                        // 오른쪽
+//                        if (plusX == col - 1) {
+//                            direction = 4; // 왼쪽으로 변경
+//                        } else {
+//                            plusX++;
+//                            continue;
+//                        }
+//                        plusX--;
+//                    }
+//                    else {
+//                        // 왼쪽
+//                        if (plusX == 0) {
+//                            direction = 3; // 오른쪽으로 변경
+//                        } else {
+//                            plusX--;
+//                            continue;
+//                        }
+//                        plusX++;
+//                    }
+//                }
+//                // *** 공통 처리 부분 ***
+//                shark.setDirection(direction);
+//                // 해당 위치에 이미 다른 상어가 있으면 크기 비교
+//                if (newSharkMap[plusY][plusX] == null) {
+//                    newSharkMap[plusY][plusX] = shark; // 그냥 넣음
+//                } else {
+//                    // 이미 있으면 크기 비교
+//                    if (newSharkMap[plusY][plusX].getSize() < shark.getSize()) {
+//                        newSharkMap[plusY][plusX] = shark;
+//                    }
+//                }
+//            }
+//        }
+//        // 이동 처리된 상어의 배열을 기존 전역변수에 담음
+//        sharkMap = newSharkMap;
+//    }
+//
+//
+//    // 상어 객체가 가지고 있는 정보를 담을 class 선언
+//    static class Shark {
+//        int speed; // 속력
+//        int direction; // 방향
+//        int size; // 크기
+//
+//        // 생성자를 통한 객체 생성
+//        public Shark(int speed, int direction, int size) {
+//            this.speed = speed;
+//            this.direction = direction;
+//            this.size = size;
+//        }
+//
+//        // 출력값을 확인하기 위한 오버라이딩
+//        @Override
+//        public String toString() {
+//            return "Shark{" +
+//                    "speed=" + speed +
+//                    ", direction=" + direction +
+//                    ", size=" + size +
+//                    '}';
+//        }
+//
+//        // 메서드로 값 반환
+//
+//        public int getSpeed() {
+//            return speed;
+//        }
+//
+//        // 메서드로 값 반환
+//        public int getDirection() {
+//            return direction;
+//        }
+//
+//        // 방향은 격자를 벗어난다면 바꿔져야 함
+//        public void setDirection(int direction) {
+//            this.direction = direction;
+//        }
+//
+//        // 메서드로 값 반환
+//        public int getSize() {
+//            return size;
+//        }
+//    }
+//}
+
+
+//import java.io.BufferedReader;
+//import java.io.InputStreamReader;
+//import java.util.StringTokenizer;
+//
+//public class Main {
+//    // 입력값
+//    static int N, M;
+//    static int r, c, d;
+//    // -1: 청소됨. 0: 청소안됨. 1: 벽
+//    static int[][] room;
+//    // 북동남서 0 1 2 3
+//    static int[] dy = {-1, 0, 1, 0};
+//    static int[] dx = {0, 1, 0, -1};
+//    // 청소한 칸 수
+//    static int cnt = 0;
+//
+//    public static void main(String[] args) throws Exception {
+//        // 입력값 처리
+//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//        StringTokenizer st = new StringTokenizer(br.readLine());
+//
+//        N = Integer.parseInt(st.nextToken());
+//        M = Integer.parseInt(st.nextToken());
+//        room = new int[N][M];
+//
+//        st = new StringTokenizer(br.readLine());
+//        r = Integer.parseInt(st.nextToken());
+//        c = Integer.parseInt(st.nextToken());
+//        d = Integer.parseInt(st.nextToken());
+//
+//        // 입력값 할당
+//        for (int i = 0; i < N; i++) {
+//            st = new StringTokenizer(br.readLine());
+//            for (int j = 0; j < M; j++) {
+//                room[i][j] = Integer.parseInt(st.nextToken());
+//            }
+//        }
+//
+//        while (true) {
+//            // 1. 청소되지 않은 경우: 청소
+//            if (room[r][c] == 0) {
+//                room[r][c] = -1;
+//                cnt++;
+//            }
+//
+//            boolean Empty = false;
+//            // 사방에 청소된 곳 있는지 여부 탐색 (사방탐색)
+//            for (int d = 0; d < 4; d++) {
+//                int ny = r + dy[d];
+//                int nx = c + dx[d];
+//                // 청소된 곳이거나 벽이면 skip
+//                if (ny < 0 || ny >= N || nx < 0 || nx >= M || room[ny][nx] != 0) continue;
+//                // 아니라면, 반복문 탈출
+//                Empty = true;
+//                break;
+//            }
+//            // 2. 사방이 모두 청소되었을 경우
+//            if (!Empty) {
+//                // 후진 계산
+//                int ny = r + dy[(d + 2) % 4];
+//                int nx = c + dx[(d + 2) % 4];
+//
+//                // 후진할 수 없는 경우 : 종료조건 (벽이거나, 격자를 벗어나거나)
+//                if (ny < 0 || ny >= N || nx < 0 || nx >= M || room[ny][nx] == 1) break;
+//
+//                // 후진할 수 있으면 후진
+//                r = ny;
+//                c = nx;
+//            }
+//            // 3. 사방에 청소되지 않은 빈칸 있는 경우
+//            else {
+//                // 반시계 계산
+//                d = (d + 3) % 4;
+//                int ny = r + dy[d];
+//                int nx = c + dx[d];
+//
+//                // 전진할 수 없거나, 청소되지 않은 빈칸 없을 경우
+//                if (ny < 0 || ny >= N || nx < 0 || nx >= M || room[ny][nx] != 0) continue;
+//
+//                // 전진
+//                r = ny;
+//                c = nx;
+//            }
+//        }
+//        // 결과값 출력
+//        System.out.println(cnt);
+//    }
+//}
+
+//import java.io.BufferedReader;
+//import java.io.InputStreamReader;
+//import java.util.ArrayDeque;
+//import java.util.Queue;
+//import java.util.StringTokenizer;
+//
+//public class Main {
+//    static int K, W, H;
+//    static int[][] map;
+//    static boolean[][][] visit;
+//
+//    // 상 하 좌 우
+//    static int[] dy = {-1, 1, 0, 0};
+//    static int[] dx = {0, 0, -1, 1};
+//    // 말의 움직임 8방
+//    static int[] hdy = {-2, -2, -1, -1, 2, 2, 1, 1};
+//    static int[] hdx = {-1, 1, -2, 2, -1, 1, -2, 2};
+//
+//    // bfs queue
+//    static Queue<Node> queue = new ArrayDeque<>();
+//
+//    public static void main(String[] args) throws Exception {
+//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//        K = Integer.parseInt(br.readLine());
+//        StringTokenizer st = new StringTokenizer(br.readLine());
+//        W = Integer.parseInt(st.nextToken());
+//        H = Integer.parseInt(st.nextToken());
+//
+//        map = new int[H][W];
+//        visit = new boolean[H][W][K + 1];
+//
+//        for (int i = 0; i < H; i++) {
+//            st = new StringTokenizer(br.readLine());
+//            for (int j = 0; j < K; j++) {
+//                map[i][j] = Integer.parseInt(st.nextToken());
+//            }
+//        }
+//
+//        // bfs
+//        bfs();
+//    }
+//
+//    static void bfs() {
+//        // 시작점 좌표, K 이동 큐에 담는다. visit 도 함께
+//        visit[0][0][K] = true;
+//        queue.offer(new Node(0, 0, K, 0));
+//
+//        while (!queue.isEmpty()) {
+//            Node node = queue.poll();
+//
+//            // 목표 도달
+//            if (node.y == H - 1 && node.x == W - 1) {
+//                System.out.println(node.d);
+//                return;
+//            }
+//
+//            // 탐색 1 - 상하좌우
+//            for (int i = 0; i < 4; i++) {
+//                int ny = node.y + dy[i];
+//                int nx = node.y + dx[i];
+//                if (ny < 0 || nx < 0 || ny >= H || nx >= W || map[ny][nx] == 1 || visit[ny][nx][node.k]) continue;
+//                visit[ny][nx][node.k] = true;
+//                queue.offer(new Node(ny, nx, node.k, node.d + 1));
+//            }
+//
+//            // 탐색 2 - 말처럼 이동
+//            if (node.k == 0) continue;
+//            for (int i = 0; i < 8; i++) {
+//                int ny = node.y + hdy[i];
+//                int nx = node.y + hdx[i];
+//                if (ny < 0 || nx < 0 || ny >= H || nx >= W || map[ny][nx] == 1 || visit[ny][nx][node.k - 1]) continue;
+//                visit[ny][nx][node.k - 1] = true;
+//                queue.offer(new Node(ny, nx, node.k - 1, node.d + 1));
+//            }
+//        }
+//
+//        System.out.println(-1);
+//    }
+//
+//    static class Node {
+//        int y, x, k, d;
+//
+//        public Node(int y, int x, int k, int d) {
+//            this.y = y;
+//            this.x = x;
+//            this.k = k;
+//            this.d = d;
+//        }
+//    }
+//}
+
+//import java.io.BufferedReader;
+//import java.io.InputStreamReader;
+//import java.util.*;
+//
+//public class Main {
+//    static int N, M, max;
+//    // 처음 데이터 유지, 복사해서 벽 바이러스 작업 수행
+//    // 벽을 세우는 좌표는 0에서 3개르 조합
+//    static int[][] map, copyMap;
+//    static List<Node> zero = new ArrayList<>(); // 0 인 좌표
+//    static List<Node> virus = new ArrayList<>(); // 2 인 좌표 (바이러스)
+//    static int zeroSize;
+//    static Node[] wall = new Node[3]; // zero 에서 선택한 조합
+//    static int[] dy = {-1, 1, 0, 0};
+//    static int[] dx = {0, 0, -1, 1};
+//    static Queue<Node> queue = new ArrayDeque<>();
+//
+//
+//    public static void main(String[] args) throws Exception {
+//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//        StringTokenizer st = new StringTokenizer(br.readLine());
+//        N = Integer.parseInt(st.nextToken());
+//        M = Integer.parseInt(st.nextToken());
+//        map = new int[N][M];
+//        copyMap = new int[N][M];
+//
+//        max = Integer.MIN_VALUE;
+//
+//        for (int i = 0; i < N; i++) {
+//            st = new StringTokenizer(br.readLine());
+//            for (int j = 0; j < M; j++) {
+//                int n = Integer.parseInt(st.nextToken());
+//                map[i][j] = n;
+//                if (n == 0) zero.add(new Node(i, j)); // 0
+//                else if (n == 2) virus.add(new Node(i, j)); // 바이러스
+//            }
+//        }
+//
+//        zeroSize = zero.size();
+//        comb(0, 0);
+//        System.out.println(max);
+//    }
+//
+//    static void comb(int srcIdx, int tgtIdx) {
+//        if (tgtIdx == 3) {
+//            // 조합완성
+//            check();
+//            return;
+//        }
+//        if (srcIdx == zeroSize) return;
+//
+//        wall[tgtIdx] = zero.get(srcIdx);
+//
+//        comb(srcIdx + 1, tgtIdx + 1);
+//        comb(srcIdx + 1, tgtIdx);
+//    }
+//
+//    static void check() {
+//        for (int i = 0; i < N; i++) {
+//            for (int j = 0; j < M; j++) {
+//                copyMap[i][j] = map[i][j];
+//            }
+//        }
+//
+//        for (int i = 0; i < 3; i++) {
+//            int y = wall[i].y;
+//            int x = wall[i].x;
+//            copyMap[y][x] = 1;
+//        }
+//
+//        queue.addAll(virus);
+//
+//        while (!queue.isEmpty()) {
+//            Node n = queue.poll();
+//            for (int d = 0; d < 4; d++) {
+//                int ny = n.y + dy[d];
+//                int nx = n.y + dx[d];
+//                if (ny < 0 || nx < 0 || ny >= N || nx >= M) continue;
+//                if (copyMap[ny][nx] == 0) {
+//                    copyMap[ny][nx] = 2;
+//                    queue.offer(new Node(ny, nx));
+//                }
+//            }
+//        }
+//
+//        int sum = 0;
+//        for (int i = 0; i < N; i++) {
+//            for (int j = 0; j < M; j++) {
+//                if (copyMap[i][j] == 0) sum++;
+//            }
+//        }
+//
+//        max = Math.max(Main.max, sum);
+//    }
+//
+//    static class Node {
+//        int y, x;
+//
+//        public Node(int y, int x) {
+//            this.y = y;
+//            this.x = x;
+//        }
+//    }
+//}
+
+//import java.io.*;
+//import java.util.*;
+//
+//public class Main {
+//    static int N, M; // 격자의 행과 열
+//    static int[][] map; // 격자판 2차원 배열
+//    static List<Node> zeroList = new ArrayList<>(); // 조합을 구해야하는데, 벽을 세울수 있는 위치 Node 를 리스트 변수로 관리
+//    static List<Node> virusList = new ArrayList<>();
+//    static boolean[] zeroVisit;
+//    static Node[] selectZero = new Node[3];
+//    static int[] dy = {-1, 1, 0, 0}; // 상 하 좌 우
+//    static int[] dx = {0, 0, -1, 1}; // 상 하 좌 우
+//    static int result = Integer.MIN_VALUE; // 안전지대 값
+//
+//
+//    public static void main(String[] args) throws IOException {
+//        // 입출력 스트림 생성
+//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+//        StringTokenizer st = new StringTokenizer(br.readLine());
+//
+//        N = Integer.parseInt(st.nextToken()); // 행의 값 할당
+//        M = Integer.parseInt(st.nextToken()); // 열의 값 할당
+//
+//        map = new int[N][M]; // 격자판 초기화
+//        // map 데이터 할당
+//        for (int i = 0; i < N; i++) {
+//            st = new StringTokenizer(br.readLine());
+//            for (int j = 0; j < M; j++) {
+//                int value = Integer.parseInt(st.nextToken());
+//                map[i][j] = value;
+//                // 만약 빈 공간이라면, 이부분에 벽을 세울수 있으니 list 에 담는다.
+//                if (value == 0) zeroList.add(new Node(i, j));
+//                else if (value == 2) virusList.add(new Node(i, j));
+//            }
+//        }
+//
+//        // 방문 배열 초기화
+//        zeroVisit = new boolean[zeroList.size()];
+//
+//        // 조합을 찾는다
+//        comb(0, 0);
+//
+//        // 결과값 출력
+//        bw.write(result + "");
+//        bw.flush();
+//        bw.close();
+//        br.close();
+//    }
+//
+//    // 사실상 dfs 다만,기저조건에서 bfs 호출
+//    static void comb(int depth, int startIndex) {
+//        if (depth == 3) {
+//            // 여기서 bfs 호출하고 호출된 메서드에서 result 비교
+//            bfs();
+//            return;
+//        }
+//        // 방문 여부에 따라 호출
+//        for (int i = startIndex; i < zeroList.size(); i++) {
+//            if (!zeroVisit[i]) {
+//                selectZero[depth] = zeroList.get(i);
+//                zeroVisit[i] = true;
+//                comb(depth + 1, i + 1);
+//                zeroVisit[i] = false;
+//            }
+//        }
+//    }
+//
+//    // 바이러스가 전염될때 어떻게 map 이 변화될지 확인
+//    static void bfs() {
+//        // 새로운 배열 생성 (처음에 얕은복사로 했다가, 깊은복사로 코드 변경했음)
+//        // 주소값만 새롭게 옮기면 안됨, 원본 map이 변경됨
+//        int[][] copyMap = new int[N][M];
+//        for (int i = 0; i < N; i++) {
+//            for (int j = 0; j < M; j++) {
+//                copyMap[i][j] = map[i][j];
+//            }
+//        }
+//        // 새로운 copyMap 에 조합에서 선택된 벽을 생성해봄
+//        for (Node node : selectZero) {
+//            copyMap[node.y][node.x] = 1;
+//        }
+//        // bfs 에 사용할 큐 생성
+//        Queue<Node> queue = new ArrayDeque<>(virusList);
+//        while (!queue.isEmpty()) {
+//            Node poll = queue.poll();
+//            // 사방 탐색 필요
+//            for (int i = 0; i < 4; i++) {
+//                int ny = poll.y + dy[i];
+//                int nx = poll.x + dx[i];
+//                // 격자판을 벗어나면 전파 못함
+//                if (ny < 0 || nx < 0 || ny >= N || nx >= M) continue;
+//                // 벽이라면 전염 못함, 근데 바이러스를 만나면 어떻게 처리해야 하지?
+//                if (copyMap[ny][nx] == 1 || copyMap[ny][nx] == 2) continue;
+//                // 2로 변경처리 후, 전염된 위치라면 queue 에 담는다.
+//                copyMap[ny][nx] = 2;
+//                queue.offer(new Node(ny, nx));
+//            }
+//        }
+//        // 안전지대 확인
+//        checkSafeZone(copyMap);
+//    }
+//
+//    static void checkSafeZone(int[][] copyMap) {
+//        int sum = 0;
+//        for (int i = 0; i < N; i++) {
+//            for (int j = 0; j < M; j++) {
+//                if (copyMap[i][j] == 0) {
+//                    sum++;
+//                }
+//            }
+//        }
+//
+//        result = Math.max(result, sum);
+//    }
+//
+//    // Node 객체 선언
+//    static class Node {
+//        int y, x;
+//
+//        // 생성자 호출
+//        public Node(int y, int x) {
+//            this.y = y;
+//            this.x = x;
+//        }
+//
+//        @Override
+//        public String toString() {
+//            return "Node{" +
+//                    "y=" + y +
+//                    ", x=" + x +
+//                    '}';
+//        }
+//    }
+//}
+
+
 import java.io.*;
+import java.util.ArrayDeque;
+import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
-    static int R, C; // 가로 세로
-    static boolean[] alphaVisit = new boolean[26]; // 알파벳 배열 선언 (방문 여부 확인)
-    static int result; // 말이 지나온 칸 수
-    static int[] dx = {-1, 1, 0, 0};
-    static int[] dy = {0, 0, -1, 1};
-    static char[][] alphaBoard; // 입력값을 담을 배열
+    // 말처럼 움직일 수 있는 횟수, 행, 열 값
+    static int K, W, H;
+    static int[][] map;
+    static boolean[][][] visitMap;
+    static int[] dy = {-1, 1, 0, 0}; // 상 하 좌 우
+    static int[] dx = {0, 0, -1, 1}; // 상 하 좌 우
+    static int[] hdy = {-2, -2, -1, -1, 2, 2, 1, 1}; // 말의 움직임
+    static int[] hdx = {-1, 1, -2, 2, -1, 1, -2, 2}; // 말의 움직임
 
     public static void main(String[] args) throws IOException {
+        // 입출력 스트림 생성
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        StringTokenizer st = new StringTokenizer(br.readLine());
+        StringTokenizer st;
 
-        // 가로 세로 변수 초기화
-        R = Integer.parseInt(st.nextToken());
-        C = Integer.parseInt(st.nextToken());
+        // 변수 초기화
+        K = Integer.parseInt(br.readLine());
+        st = new StringTokenizer(br.readLine());
+        W = Integer.parseInt(st.nextToken());
+        H = Integer.parseInt(st.nextToken());
+        map = new int[H][W];
+        visitMap = new boolean[H][W][K + 1];
 
-        // 전역변수 초기화
-        alphaBoard = new char[R][C];
-        for (int i = 0; i < R; i++) {
-            char[] charArray = br.readLine().toCharArray();
-            for (int j = 0; j < charArray.length; j++) {
-                alphaBoard[i][j] = charArray[j];
+        // map 데이터 할당
+        for (int i = 0; i < H; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < W; j++) {
+                map[i][j] = Integer.parseInt(st.nextToken());
             }
         }
 
-        // 메서드 호출
-        // 문제에서 말의 시작점이 1행 1열에 놓여있는데, 좌측 상단의 칸도 포함된다고 했음
-        dfs(0, 0, 1);
+        // bfs 호출
+        int result = bfs();
+
+        // 결과값 출력
         bw.write(result + "");
         bw.flush();
         bw.close();
         br.close();
     }
 
-    // 이 문제는 dfs 를 사용해야함
-    // 이유 : 백트래킹을 사용해야함에도 이유가 있지만, 말이 상하좌우로 움직이면서 지금까지 나온 알파벳과는 다른 알파벳을 선택할 수 있어야 하기 때문
-    static void dfs(int y, int x, int count) {
-        // 백트래킹을 이용한 문제풀이 방식이기에 이전에 시도한 방식이
-        // 더 많은 칸을 이동했을수도 있음
-        // 그렇게에 최대값을 호출시에 무조건 담아놔야 함
-        result = Math.max(result, count);
+    static int bfs() {
+        Queue<Node> queue = new ArrayDeque<>();
+        visitMap[0][0][K] = true;
+        queue.offer(new Node(0, 0, K, 0));
 
-        // 현재 들어온 지점은 방문 처리 시킴
-        alphaVisit[alphaBoard[y][x] - 'A'] = true;
+        while (!queue.isEmpty()) {
+            Node poll = queue.poll();
+            int y = poll.y;
+            int x = poll.x;
+            int distance = poll.distance;
 
-        // 상 하 좌 우 값 탐색을 위한 반복문
-        for (int i = 0; i < 4; i++) {
-            // 현재 지점에서 갈 수 있는 좌표값 계싼
-            int ny = y + dy[i];
-            int nx = x + dx[i];
+            // 기저 조건
+            if (y == H - 1 && x == W - 1) {
+                return distance;
+            }
 
-            // 상하좌우 격자에서 인덱스가 벗어나지 않으면서, 이동하고자 하는 좌표의 알파벳이 방문한적 없는 알파벳인 경우
-            if (ny >= 0 && ny < R && nx >= 0 && nx < C
-                    && !alphaVisit[alphaBoard[ny][nx] - 'A']) {
-                // dfs 재호출
-                dfs(ny, nx, count + 1);
+            // 상하좌우 이동
+            for (int i = 0; i < 4; i++) {
+                int ny = y + dy[i];
+                int nx = x + dx[i];
+
+                if (ny < 0 || nx < 0 || ny >= H || nx >= W || map[ny][nx] == 1 || visitMap[ny][nx][poll.k])
+                    continue;
+
+                visitMap[ny][nx][poll.k] = true;
+                queue.offer(new Node(ny, nx, poll.k, poll.distance + 1));
+            }
+
+            // 말의 움직임
+            if (poll.k > 0) { // K가 남아있을 때만 사용 가능
+                for (int i = 0; i < 8; i++) {
+                    int ny = poll.y + hdy[i];
+                    int nx = poll.x + hdx[i];
+
+                    if (ny < 0 || nx < 0 || ny >= H || nx >= W || map[ny][nx] == 1 || visitMap[ny][nx][poll.k - 1])
+                        continue;
+
+                    visitMap[ny][nx][poll.k - 1] = true;
+                    queue.offer(new Node(ny, nx, poll.k - 1, poll.distance + 1));
+                }
             }
         }
-        // 위 반복문을 통해 dfs 재귀호출이 이루어지지 않는다라는 것은 백 트래킹이 이루어 져야 한다는 것을 뜻함
-        // 현재 좌표 방문을 false 처리
-        alphaVisit[alphaBoard[y][x] - 'A'] = false;
+
+        return -1;
+    }
+
+    static class Node {
+        int y;
+        int x;
+        int k;
+        int distance;
+
+
+        public Node(int y, int x, int k, int distance) {
+            this.y = y;
+            this.x = x;
+            this.k = k;
+            this.distance = distance;
+        }
     }
 }
