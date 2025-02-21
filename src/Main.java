@@ -1559,111 +1559,377 @@
 //}
 
 
+//import java.io.*;
+//import java.util.ArrayDeque;
+//import java.util.Queue;
+//import java.util.StringTokenizer;
+//
+//public class Main {
+//    // 말처럼 움직일 수 있는 횟수, 행, 열 값
+//    static int K, W, H;
+//    static int[][] map;
+//    static boolean[][][] visitMap;
+//    static int[] dy = {-1, 1, 0, 0}; // 상 하 좌 우
+//    static int[] dx = {0, 0, -1, 1}; // 상 하 좌 우
+//    static int[] hdy = {-2, -2, -1, -1, 2, 2, 1, 1}; // 말의 움직임
+//    static int[] hdx = {-1, 1, -2, 2, -1, 1, -2, 2}; // 말의 움직임
+//
+//    public static void main(String[] args) throws IOException {
+//        // 입출력 스트림 생성
+//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+//        StringTokenizer st;
+//
+//        // 변수 초기화
+//        K = Integer.parseInt(br.readLine());
+//        st = new StringTokenizer(br.readLine());
+//        W = Integer.parseInt(st.nextToken());
+//        H = Integer.parseInt(st.nextToken());
+//        map = new int[H][W];
+//        visitMap = new boolean[H][W][K + 1];
+//
+//        // map 데이터 할당
+//        for (int i = 0; i < H; i++) {
+//            st = new StringTokenizer(br.readLine());
+//            for (int j = 0; j < W; j++) {
+//                map[i][j] = Integer.parseInt(st.nextToken());
+//            }
+//        }
+//
+//        // bfs 호출
+//        int result = bfs();
+//
+//        // 결과값 출력
+//        bw.write(result + "");
+//        bw.flush();
+//        bw.close();
+//        br.close();
+//    }
+//
+//    static int bfs() {
+//        Queue<Node> queue = new ArrayDeque<>();
+//        visitMap[0][0][K] = true;
+//        queue.offer(new Node(0, 0, K, 0));
+//
+//        while (!queue.isEmpty()) {
+//            Node poll = queue.poll();
+//            int y = poll.y;
+//            int x = poll.x;
+//            int distance = poll.distance;
+//
+//            // 기저 조건
+//            if (y == H - 1 && x == W - 1) {
+//                return distance;
+//            }
+//
+//            // 상하좌우 이동
+//            for (int i = 0; i < 4; i++) {
+//                int ny = y + dy[i];
+//                int nx = x + dx[i];
+//
+//                if (ny < 0 || nx < 0 || ny >= H || nx >= W || map[ny][nx] == 1 || visitMap[ny][nx][poll.k])
+//                    continue;
+//
+//                visitMap[ny][nx][poll.k] = true;
+//                queue.offer(new Node(ny, nx, poll.k, poll.distance + 1));
+//            }
+//
+//            // 말의 움직임
+//            if (poll.k > 0) { // K가 남아있을 때만 사용 가능
+//                for (int i = 0; i < 8; i++) {
+//                    int ny = poll.y + hdy[i];
+//                    int nx = poll.x + hdx[i];
+//
+//                    if (ny < 0 || nx < 0 || ny >= H || nx >= W || map[ny][nx] == 1 || visitMap[ny][nx][poll.k - 1])
+//                        continue;
+//
+//                    visitMap[ny][nx][poll.k - 1] = true;
+//                    queue.offer(new Node(ny, nx, poll.k - 1, poll.distance + 1));
+//                }
+//            }
+//        }
+//
+//        return -1;
+//    }
+//
+//    static class Node {
+//        int y;
+//        int x;
+//        int k;
+//        int distance;
+//
+//
+//        public Node(int y, int x, int k, int distance) {
+//            this.y = y;
+//            this.x = x;
+//            this.k = k;
+//            this.distance = distance;
+//        }
+//    }
+//}
+
+/*
 import java.io.*;
-import java.util.ArrayDeque;
-import java.util.Queue;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main {
-    // 말처럼 움직일 수 있는 횟수, 행, 열 값
-    static int K, W, H;
-    static int[][] map;
-    static boolean[][][] visitMap;
-    static int[] dy = {-1, 1, 0, 0}; // 상 하 좌 우
-    static int[] dx = {0, 0, -1, 1}; // 상 하 좌 우
-    static int[] hdy = {-2, -2, -1, -1, 2, 2, 1, 1}; // 말의 움직임
-    static int[] hdx = {-1, 1, -2, 2, -1, 1, -2, 2}; // 말의 움직임
+    static int N; // 구역구 개수
+    static int[] zoneArray;
+    static int[] personArray; // 인구수 배열
+    static boolean[][] linkArray; // 각 구역의 연결 상태 관리 배열
+    static List<Integer> selectList = new ArrayList<>(); // 선택된 구역
+    static List<Integer> notSelectList = new ArrayList<>(); // 선택된 구역
+
+    static boolean[] visitArray; // 방문한 구역
+    static int tempCount;
+    static int result = Integer.MAX_VALUE;
 
     public static void main(String[] args) throws IOException {
         // 입출력 스트림 생성
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        StringTokenizer st;
-
-        // 변수 초기화
-        K = Integer.parseInt(br.readLine());
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        // 변수 값 할당
+        N = Integer.parseInt(st.nextToken());
+        zoneArray = new int[N];
+        personArray = new int[N];
+        visitArray = new boolean[N];
         st = new StringTokenizer(br.readLine());
-        W = Integer.parseInt(st.nextToken());
-        H = Integer.parseInt(st.nextToken());
-        map = new int[H][W];
-        visitMap = new boolean[H][W][K + 1];
+        for (int i = 0; i < personArray.length; i++) {
+            zoneArray[i] = i + 1;
+            personArray[i] = Integer.parseInt(st.nextToken());
+        }
 
-        // map 데이터 할당
-        for (int i = 0; i < H; i++) {
+        // 각 구역에 연결된 구역 체크
+        linkArray = new boolean[N][N];
+        for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < W; j++) {
-                map[i][j] = Integer.parseInt(st.nextToken());
+            int count = Integer.parseInt(st.nextToken());
+            for (int j = 0; j < count; j++) {
+                int index = Integer.parseInt(st.nextToken());
+                linkArray[i][index - 1] = true;
             }
         }
 
-        // bfs 호출
-        int result = bfs();
+        // 1개의 조합부터 N - 1 까찌의 조합을 짜봄
+        // N - 1은 전부 다 선택하는 조합이기에 해볼 필요가 없음 어차피 두구역으로 안나누어짐
+        for (int i = 0; i < N - 1; i++) {
+            tempCount = i + 1;
+            comb(0);
+        }
 
-        // 결과값 출력
+        if (result == Integer.MAX_VALUE) {
+            result = -1;
+        }
+
         bw.write(result + "");
         bw.flush();
         bw.close();
         br.close();
     }
 
-    static int bfs() {
-        Queue<Node> queue = new ArrayDeque<>();
-        visitMap[0][0][K] = true;
-        queue.offer(new Node(0, 0, K, 0));
+    public static void comb(int startIndex) {
+        if (tempCount == selectList.size()) {
+            notSelectList.clear(); // 이전 결과 초기화
+            for (int i = 1; i <= N; i++) { // 전체 구역에서 selectList에 없는 값 찾기
+                if (!selectList.contains(i)) {
+                    notSelectList.add(i);
+                }
+            }
+            boolean check1 = check(selectList);
+            boolean check2 = check(notSelectList);
 
+            // 둘다 나누어진 두가지 구역이라면
+            if (check1 && check2) {
+                int result1 = 0;
+                int result2 = 0;
+                for (int i = 0; i < selectList.size(); i++) {
+                    result1 += personArray[selectList.get(i) - 1];
+                }
+
+                for (int i = 0; i < notSelectList.size(); i++) {
+                    result2 += personArray[notSelectList.get(i) - 1];
+                }
+                int abs = Math.abs(result1 - result2);
+                result = Math.min(result, abs);
+                return;
+            }
+            return;
+        }
+
+        for (int i = startIndex; i < N; i++) {
+            if (!visitArray[i]) {
+                selectList.add(i + 1);
+                visitArray[i] = true;
+                comb(i + 1);
+                visitArray[i] = false;
+                selectList.remove(selectList.size() - 1);
+            }
+        }
+    }
+
+    // check 조건 명확화
+    // 기존의 메서드는 불확실함
+    // 변경 포인트 : 인자값으로 전달받는 list 에서의 연결 여부 확인
+    public static boolean check(List<Integer> list) {
+        if (list.isEmpty()) {
+            return false;
+        }
+
+        boolean[] tempVisit = new boolean[N];
+        Queue<Integer> queue = new ArrayDeque<>();
+        int startValue = list.get(0);
+        queue.offer(startValue);
+        tempVisit[startValue - 1] = true;
+        int count = 0;
         while (!queue.isEmpty()) {
-            Node poll = queue.poll();
-            int y = poll.y;
-            int x = poll.x;
-            int distance = poll.distance;
+            int poll = queue.poll();
+            count++;
 
-            // 기저 조건
-            if (y == H - 1 && x == W - 1) {
-                return distance;
-            }
-
-            // 상하좌우 이동
-            for (int i = 0; i < 4; i++) {
-                int ny = y + dy[i];
-                int nx = x + dx[i];
-
-                if (ny < 0 || nx < 0 || ny >= H || nx >= W || map[ny][nx] == 1 || visitMap[ny][nx][poll.k])
-                    continue;
-
-                visitMap[ny][nx][poll.k] = true;
-                queue.offer(new Node(ny, nx, poll.k, poll.distance + 1));
-            }
-
-            // 말의 움직임
-            if (poll.k > 0) { // K가 남아있을 때만 사용 가능
-                for (int i = 0; i < 8; i++) {
-                    int ny = poll.y + hdy[i];
-                    int nx = poll.x + hdx[i];
-
-                    if (ny < 0 || nx < 0 || ny >= H || nx >= W || map[ny][nx] == 1 || visitMap[ny][nx][poll.k - 1])
-                        continue;
-
-                    visitMap[ny][nx][poll.k - 1] = true;
-                    queue.offer(new Node(ny, nx, poll.k - 1, poll.distance + 1));
+            for (int i = 0; i < list.size(); i++) {
+                Integer value = list.get(i);
+                if (!tempVisit[value - 1] && linkArray[poll - 1][value - 1]) {
+                    queue.offer(value);
+                    tempVisit[value - 1] = true;
                 }
             }
         }
 
-        return -1;
+        return count == list.size();
+    }
+}*/
+
+
+//import java.io.BufferedReader;
+//import java.io.InputStreamReader;
+//import java.util.StringTokenizer;
+//
+//// 완탐 - dfs
+//public class Main {
+//    static int N, cnt;
+//    static int[][] map;
+//    // delta
+//    // 현재 방향에 따라 다음 이동 방향이 제한 <= 현재 방향에 따른 y, x 의 변화량
+//    // 현재 -> 다음
+//    static int[][][] delta = {
+//            {{1, 1}, {0, 1}, {1, 0}}, // 대각선 0 => 대각선, 가로, 세로
+//            {{1, 1}, {0, 1}, {0, 0}}, // 가로 1  => 대각선, 가로, 세로 (dummy)
+//            {{1, 1}, {0, 0}, {1, 0}}  // 세로 2  => 대각선, 가로(dummy), 세로
+//    };
+//
+//    public static void main(String[] args) throws Exception {
+//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//        N = Integer.parseInt(br.readLine());
+//
+//        map = new int[N + 1][N + 1]; // 0 dummy
+//
+//        for (int i = 1; i <= N; i++) {
+//            StringTokenizer st = new StringTokenizer(br.readLine());
+//            for (int j = 1; j <= N; j++) {
+//                map[i][j] = Integer.parseInt(st.nextToken());
+//            }
+//        }
+//
+//        // 풀이 dfs
+//        dfs(1, 2, 1); // 1,2 좌표에서 가로 로 시작
+//
+//        System.out.println(cnt);
+//    }
+//
+//    static void dfs(int y, int x, int d) { // d: 현재 y,x 좌표에 놓여진 방향
+//
+//        // 현재 좌표가 N, N 확인
+//        if (y == N && x == N) {
+//            cnt++;
+//            return;
+//        }
+//
+//        // delta 를 이용한 탐색 이어나간다. for 문이 기저조건 역할
+//        for (int i = 0; i < 3; i++) { // i 는 대각선, 가로, 세로
+//
+//            int ny = y + delta[d][i][0];
+//            int nx = x + delta[d][i][1];
+//
+//            // dummy ( 가면 안되는 방향 ) 처리
+//            if (y == ny && x == nx) continue;
+//
+//            // 범위
+//            if (ny > N || nx > N || map[ny][nx] == 1) continue; // 참고로 visit 필요 X
+//
+//            // 대각선 이동의 측면
+//            if (i == 0 && (map[ny][nx - 1] == 1 || map[ny - 1][nx] == 1)) continue;
+//
+//            dfs(ny, nx, i);
+//        }
+//    }
+//}
+
+
+public class Main {
+    public static void main(String[] args) {
+        int[] schedules1 = {700, 700, 1100};
+        int[][] timeLogs1 = {
+                {710, 2359, 1050, 700, 650, 631, 659},
+                {800, 801, 805, 800, 759, 810, 809},
+                {1105, 1001, 1002, 600, 1059, 1001, 1100}
+        };
+        int startDay1 = 5;
+        int solution1 = solution(schedules1, timeLogs1, startDay1);
+        System.out.println("solution1 = " + solution1);
+
+        int[] schedules2 = {730, 855, 700, 720};
+        int[][] timeLogs2 = {
+                {710, 700, 650, 735, 700, 931, 912},
+                {908, 901, 805, 815, 800, 831, 835},
+                {705, 701, 702, 705, 710, 710, 711},
+                {707, 731, 859, 913, 934, 931, 905}
+        };
+        int startDay2 = 1;
+        int solution2 = solution(schedules2, timeLogs2, startDay2);
+        System.out.println("solution2 = " + solution2);
     }
 
-    static class Node {
-        int y;
-        int x;
-        int k;
-        int distance;
+    public static int solution(int[] schedules, int[][] timelogs, int startday) {
+        int answer = 0;
 
-
-        public Node(int y, int x, int k, int distance) {
-            this.y = y;
-            this.x = x;
-            this.k = k;
-            this.distance = distance;
+        for (int i = 0; i < timelogs.length; i++) {
+            int standTime = calcStandTime(schedules[i]);
+            boolean flag = true;
+            int currentDay = startday;
+            for (int j = 0; j < timelogs[i].length; j++) {
+                // 주말 인 경우는 무조건 통과
+                if (currentDay % 7 == 6 || currentDay % 7 == 0) {
+                    currentDay++;
+                    continue;
+                }
+                // 시간이 넘어간 경우
+                if (timelogs[i][j] > standTime) {
+                    flag = false;
+                    break;
+                }
+                currentDay++;
+            }
+            if (flag) answer++;
         }
+
+
+        return answer;
+    }
+
+    public static int calcStandTime(int tempTime) {
+        int time = tempTime / 100;
+        int minute = (tempTime % 100) + 10;
+
+        // 60 분을 넘어가는 경우
+        if (minute >= 60) {
+            minute -= 60;
+            time += 1;
+        }
+        // 24시를 넘어가는 경우
+        if (time >= 24) {
+            time -= 24;
+        }
+
+        return time * 100 + minute;
     }
 }
