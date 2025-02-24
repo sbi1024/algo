@@ -1865,71 +1865,296 @@ public class Main {
 //}
 
 
-public class Main {
+//public class Main {
+//    public static void main(String[] args) {
+//        int[] schedules1 = {700, 700, 1100};
+//        int[][] timeLogs1 = {
+//                {710, 2359, 1050, 700, 650, 631, 659},
+//                {800, 801, 805, 800, 759, 810, 809},
+//                {1105, 1001, 1002, 600, 1059, 1001, 1100}
+//        };
+//        int startDay1 = 5;
+//        int solution1 = solution(schedules1, timeLogs1, startDay1);
+//        System.out.println("solution1 = " + solution1);
+//
+//        int[] schedules2 = {730, 855, 700, 720};
+//        int[][] timeLogs2 = {
+//                {710, 700, 650, 735, 700, 931, 912},
+//                {908, 901, 805, 815, 800, 831, 835},
+//                {705, 701, 702, 705, 710, 710, 711},
+//                {707, 731, 859, 913, 934, 931, 905}
+//        };
+//        int startDay2 = 1;
+//        int solution2 = solution(schedules2, timeLogs2, startDay2);
+//        System.out.println("solution2 = " + solution2);
+//    }
+//
+//    public static int solution(int[] schedules, int[][] timelogs, int startday) {
+//        int answer = 0;
+//
+//        for (int i = 0; i < timelogs.length; i++) {
+//            int standTime = calcStandTime(schedules[i]);
+//            boolean flag = true;
+//            int currentDay = startday;
+//            for (int j = 0; j < timelogs[i].length; j++) {
+//                // 주말 인 경우는 무조건 통과
+//                if (currentDay % 7 == 6 || currentDay % 7 == 0) {
+//                    currentDay++;
+//                    continue;
+//                }
+//                // 시간이 넘어간 경우
+//                if (timelogs[i][j] > standTime) {
+//                    flag = false;
+//                    break;
+//                }
+//                currentDay++;
+//            }
+//            if (flag) answer++;
+//        }
+//
+//
+//        return answer;
+//    }
+//
+//    public static int calcStandTime(int tempTime) {
+//        int time = tempTime / 100;
+//        int minute = (tempTime % 100) + 10;
+//
+//        // 60 분을 넘어가는 경우
+//        if (minute >= 60) {
+//            minute -= 60;
+//            time += 1;
+//        }
+//        // 24시를 넘어가는 경우
+//        if (time >= 24) {
+//            time -= 24;
+//        }
+//
+//        return time * 100 + minute;
+//    }
+//}
+
+//import java.io.*;
+//import java.util.PriorityQueue;
+//import java.util.StringTokenizer;
+//
+//public class Main {
+//    static int N, M, D; // 격자판 행, 열, 궁수의 공격 거리 제한 변수
+//    static int[][] map; // 격자판 2차원 배열 생성, 궁수는 N + 1 행에 위치
+//
+//    // 조합 관련된 변수 선언
+//    static int[] archer; // 궁수
+//    static boolean[] visit; // 방문 여부 확인
+//    static int[] selectArcher = new int[3]; // 선택된 궁수의 위치
+//
+//    static int[] dy = {-1, -1, -1};
+//    static int[] dx = {-1, 0, 1};
+//
+//    // 결과값
+//    static int result = Integer.MIN_VALUE;
+//
+//
+//    public static void main(String[] args) throws IOException {
+//        // 입출력 스트림 생성
+//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+//
+//        // 변수 할당
+//        StringTokenizer st = new StringTokenizer(br.readLine());
+//        N = Integer.parseInt(st.nextToken()); // 행 할당
+//        M = Integer.parseInt(st.nextToken()); // 열 할당
+//        D = Integer.parseInt(st.nextToken()); // 궁수의 거리 제한 할당
+//        map = new int[N + 1][M]; // 궁수의 위치는  N + 1에 위치 (0 : 아무것도 없음, 1 : 적군의 위치, 2: 성, 궁수 위치)
+//
+//        // map 변수 할당 (마지막 행은, 성과 궁수가 위치)
+//        for (int i = 0; i < map.length - 1; i++) {
+//            st = new StringTokenizer(br.readLine());
+//            for (int j = 0; j < map[i].length; j++) {
+//                map[i][j] = Integer.parseInt(st.nextToken());
+//            }
+//        }
+//
+//        // 조합 실행
+//        archer = new int[M];
+//        for (int i = 0; i < archer.length; i++) archer[i] = i;
+//        visit = new boolean[M];
+//        comb(0, 0);
+//
+//        // 출력
+//
+//        bw.write(result + "");
+//        bw.flush();
+//        bw.close();
+//        br.close();
+//    }
+//
+//    // 조합의 경우를 구함, 궁수가 위차하는 경우의 수에서 시뮬레이션을 실행해야 함
+//    public static void comb(int depth, int startIndex) {
+//        // 기저조건
+//        // 5개 중에 3개를 전부 다 뽑았을 경우
+//        if (depth == 3) {
+//            // 여기서 해당 조합을 결과값을 가지고 궁수를 배치하여 시뮬레이션 실행
+//            simulation();
+//            return;
+//        }
+//
+//        // dfs 실행
+//        for (int i = startIndex; i < archer.length; i++) {
+//            if (!visit[i]) {
+//                selectArcher[depth] = archer[i];
+//                visit[i] = true;
+//                comb(depth + 1, i + 1);
+//                visit[i] = false;
+//            }
+//        }
+//    }
+//
+//    public static void simulation() {
+//        // 1. 가장 먼저 조합으로 뽑은 궁수의 위치를 map 에 할당한다.
+//        // 궁수의 위치는 2로 표현
+//        for (int i = 0; i < 3; i++) map[N][selectArcher[i]] = 2;
+//
+//        int[][] copyMap = makeCopyMap(map);
+//
+//        int removeEnemy = 0;
+//
+//        // 2. 반복문을 탈출하는 조건은 적군이 map 에 존재하는지 판단
+//        while (checkEnemy(copyMap)) {
+//            // 3. 궁수의 위치가 표현이 되었고, 적을 공격해서 제거해야함.
+//            // 이때 궁수는 자신의 위치에서 가장 가까운 위치의 적을 제거 (거리가 D 이하인 적)
+//            for (int archerCol : selectArcher) {
+//                PriorityQueue<Target> targets = new PriorityQueue<>((t1, t2) -> {
+//                    if (t1.distance != t2.distance) {
+//                        return t1.distance - t2.distance;
+//                    }
+//                    return t1.x - t2.x;
+//                });
+//
+//                for (int r = 0; r < N; r++) {
+//                    for (int c = 0; c < M; c++) {
+//                        if (copyMap[r][c] == 1) { // 적이 있으면
+//                            int dist = Math.abs(N - r) + Math.abs(archerCol - c);
+//                            if (dist <= D) { // 공격 범위 내라면
+//                                targets.offer(new Target(r, c, dist));
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                // 우선순위 큐에서 가장 우선순위가 높은(조건에 맞는) 적 선택
+//                if (!targets.isEmpty()) {
+//                    Target target = targets.poll();
+//                    copyMap[target.y][target.x] = 0;
+//                    removeEnemy++;
+//                }
+//            }
+//
+//            // 3. 궁수가 적군을 제거하고, 적군은 한칸 내려옴
+//            // 마지막 행 부터 체크해야함
+//            for (int i = N - 1; i >= 0; i--) {
+//                for (int j = 0; j < M; j++) {
+//                    if (copyMap[i][j] == 1) {
+//                        // 현재 위치를 빈 공간 (0) 으로 만들고, 다음 위치로 이동
+//                        copyMap[i][j] = 0;
+//                        // 성에 도달하였으니, 따로 작업할 이유 없음
+//                        if (i + 1 < N) {
+//                            // 적군 위치 할당
+//                            copyMap[i + 1][j] = 1;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//        // 결과값 갱신
+//        result = Math.max(result, removeEnemy);
+//
+//        // 마지막 행 궁수 위치 초기화
+//        for (int i = 0; i < M; i++) {
+//            map[N][i] = 0;
+//        }
+//    }
+//
+//    // 복사 배열 생성
+//    static int[][] makeCopyMap(int[][] map) {
+//        int[][] copyMap = new int[N + 1][M];
+//
+//        for (int i = 0; i < map.length; i++) {
+//            for (int j = 0; j < map[i].length; j++) {
+//                copyMap[i][j] = map[i][j];
+//            }
+//        }
+//
+//        return copyMap;
+//    }
+//
+//    // 적군이 존재하는지 확인 메서드
+//    public static boolean checkEnemy(int[][] map) {
+//        for (int i = 0; i < map.length; i++) {
+//            for (int j = 0; j < map[i].length; j++) {
+//                if (map[i][j] == 1) {
+//                    // 한명이라도 존재한다면, true  반환
+//                    return true;
+//                }
+//            }
+//        }
+//        // 없다면 false 반환
+//        return false;
+//    }
+//
+//    // 객체 생성
+//    static class Target {
+//        int y;
+//        int x;
+//        int distance;
+//
+//        public Target(int y, int x, int distance) {
+//            this.y = y;
+//            this.x = x;
+//            this.distance = distance;
+//        }
+//    }
+//}
+
+
+class Main {
     public static void main(String[] args) {
-        int[] schedules1 = {700, 700, 1100};
-        int[][] timeLogs1 = {
-                {710, 2359, 1050, 700, 650, 631, 659},
-                {800, 801, 805, 800, 759, 810, 809},
-                {1105, 1001, 1002, 600, 1059, 1001, 1100}
-        };
-        int startDay1 = 5;
-        int solution1 = solution(schedules1, timeLogs1, startDay1);
+
+        // 22	6	8
+        int n1 = 22;
+        int w1 = 6;
+        int num1 = 8;
+        int solution1 = solution(n1, w1, num1);
         System.out.println("solution1 = " + solution1);
 
-        int[] schedules2 = {730, 855, 700, 720};
-        int[][] timeLogs2 = {
-                {710, 700, 650, 735, 700, 931, 912},
-                {908, 901, 805, 815, 800, 831, 835},
-                {705, 701, 702, 705, 710, 710, 711},
-                {707, 731, 859, 913, 934, 931, 905}
-        };
-        int startDay2 = 1;
-        int solution2 = solution(schedules2, timeLogs2, startDay2);
+        int n2 = 13;
+        int w2 = 3;
+        int num2 = 6;
+        int solution2 = solution(n2, w2, num2);
         System.out.println("solution2 = " + solution2);
     }
 
-    public static int solution(int[] schedules, int[][] timelogs, int startday) {
+    public static int solution(int n, int w, int num) {
         int answer = 0;
 
-        for (int i = 0; i < timelogs.length; i++) {
-            int standTime = calcStandTime(schedules[i]);
-            boolean flag = true;
-            int currentDay = startday;
-            for (int j = 0; j < timelogs[i].length; j++) {
-                // 주말 인 경우는 무조건 통과
-                if (currentDay % 7 == 6 || currentDay % 7 == 0) {
-                    currentDay++;
-                    continue;
+        int remain = n % w;
+        int mod = n / w;
+        int row = remain == 0 ? mod : mod + 1;
+        int[][] map = new int[row][w];
+        int cur = 1;
+        // 지그재그 방식으로 값 채우기
+        for (int i = 0; i < map.length; i++) {
+            if (i % 2 == 0) { // 왼 → 오
+                for (int j = 0; j < w && cur <= n; j++) {
+                    map[i][j] = cur++;
                 }
-                // 시간이 넘어간 경우
-                if (timelogs[i][j] > standTime) {
-                    flag = false;
-                    break;
+            } else { // 오 → 왼
+                for (int j = w - 1; j >= 0 && cur <= n; j--) {
+                    map[i][j] = cur++;
                 }
-                currentDay++;
             }
-            if (flag) answer++;
         }
-
 
         return answer;
-    }
-
-    public static int calcStandTime(int tempTime) {
-        int time = tempTime / 100;
-        int minute = (tempTime % 100) + 10;
-
-        // 60 분을 넘어가는 경우
-        if (minute >= 60) {
-            minute -= 60;
-            time += 1;
-        }
-        // 24시를 넘어가는 경우
-        if (time >= 24) {
-            time -= 24;
-        }
-
-        return time * 100 + minute;
     }
 }
