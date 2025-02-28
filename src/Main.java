@@ -2233,146 +2233,376 @@ public class Main {
 //}
 
 // https://www.acmicpc.net/problem/14888
+//
+//import java.io.*;
+//import java.util.ArrayList;
+//import java.util.List;
+//import java.util.StringTokenizer;
+//
+//// 연산자의 순열을 구해야 한다.
+//// 연산자의 순열의 경우의 수 마다 결과값을 계산해서 최대값, 최소값을 갱신한다.
+//
+//public class Main {
+//    static int N; // N개로 이어진 수열 (EX) 1, 2 ...)
+//    static int[] numberArray; // N개로 이어진 수열을 담는 배열
+//
+//    // 각 연산자마다 배열을 생성하여 사용하는거보다, 가변 리스트로 담아서 사용하는게 낫겟다는 판단을 함
+//    static List<Integer> operationList = new ArrayList<>(); // 연산자를 담는 list
+//    static List<Integer> selectOperationList = new ArrayList<>(); // 선택된 연산자를 담는 list
+//    static boolean[] operationVisit; // 연산자 방문 여부 확인 배열
+//
+//    // 결과값으로 출력할 최대값과 최소값 변수 선언
+//    static int maxValue = Integer.MIN_VALUE;
+//    static int minValue = Integer.MAX_VALUE;
+//
+//    public static void main(String[] args) throws IOException {
+//        // 입추력 스트림 생성
+//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+//        StringTokenizer st;
+//        StringBuilder sb = new StringBuilder();
+//
+//        // 입력값 할당
+//        N = Integer.parseInt(br.readLine());
+//        numberArray = new int[N];
+//        // numberArray 값 할당 (피연산자)
+//        st = new StringTokenizer(br.readLine());
+//        for (int i = 0; i < N; i++) numberArray[i] = Integer.parseInt(st.nextToken());
+//
+//        // 연산자 기호 값 할당
+//        st = new StringTokenizer(br.readLine());
+//
+//        // 연산 횟수 계산
+//        int plusCount = Integer.parseInt(st.nextToken());
+//        int minusCount = Integer.parseInt(st.nextToken());
+//        int multiCount = Integer.parseInt(st.nextToken());
+//        int modCount = Integer.parseInt(st.nextToken());
+//
+//        // list 에 add ( + : 0, - : 1, * : 2, / : 3)
+//        for (int i = 0; i < plusCount; i++) operationList.add(0);
+//        for (int i = 0; i < minusCount; i++) operationList.add(1);
+//        for (int i = 0; i < multiCount; i++) operationList.add(2);
+//        for (int i = 0; i < modCount; i++) operationList.add(3);
+//
+//        // 방문 여부 확인용 변수 선언
+//        operationVisit = new boolean[operationList.size()];
+//
+//        // operationList 의 순열 경우의 수 구하기
+//        // 구하고자 하는 경우의 수는 N개 중에 N-1개 고르기
+//        perm(0);
+//
+//        // 결과값 포맷 맞추기 > 최대값 (줄바꿈) 최소값 형식
+//        sb.append(maxValue).append("\n");
+//        sb.append(minValue).append("\n");
+//
+//        // 결과값 출력
+//        bw.write(sb.toString());
+//        bw.flush();
+//        bw.close();
+//        br.close();
+//    }
+//
+//    // 순열 dfs
+//    public static void perm(int depth) {
+//        // 기저조건 설정
+//        if (depth == N - 1) {
+//            // 연산 결과 계산 실행
+//            calcMinMaxValue();
+//            return;
+//        }
+//
+//        // 연산자를 뽑는 반복문
+//        for (int i = 0; i < operationList.size(); i++) {
+//            if (!operationVisit[i]) {
+//                selectOperationList.add(operationList.get(i));
+//                operationVisit[i] = true;
+//                perm(depth + 1);
+//                operationVisit[i] = false;
+//                selectOperationList.remove(selectOperationList.size() - 1);
+//            }
+//        }
+//    }
+//
+//    // 순열로 선택된 연산자 계산처리
+//    static void calcMinMaxValue() {
+//        // 첫 변수값 할당
+//        int result = numberArray[0];
+//
+//        // 마지막 연산과정은 제외함
+//        for (int i = 1; i < numberArray.length - 1; i++) {
+//            int number = numberArray[i];
+//            int operation = selectOperationList.get(i - 1);
+//            result = calc(result, number, operation);
+//        }
+//
+//        // 마지막 연산과정 처리
+//        result = calc(
+//                result,
+//                numberArray[numberArray.length - 1],
+//                selectOperationList.get(selectOperationList.size() - 1)
+//        );
+//
+//        // 최대값 최소값 계산
+//        maxValue = Math.max(result, maxValue);
+//        minValue = Math.min(result, minValue);
+//    }
+//
+//    static int calc(int number1, int number2, int operation) {
+//        // 리턴값 선언
+//        int result = 0;
+//        // 연산자 마다 다르게 처리
+//        switch (operation) {
+//            // 덧셈
+//            case 0:
+//                result = number1 + number2;
+//                break;
+//            // 뺄셈
+//            case 1:
+//                result = number1 - number2;
+//                break;
+//            // 곱셈
+//            case 2:
+//                result = number1 * number2;
+//                break;
+//            // 나눗셈
+//            case 3:
+//                result = number1 / number2;
+//                break;
+//            default:
+//                break;
+//        }
+//        // 결과값 반환
+//        return result;
+//    }
+//}
+
+// https://www.acmicpc.net/problem/2580
+
+
+//import java.io.BufferedReader;
+//import java.io.InputStreamReader;
+//import java.util.ArrayList;
+//import java.util.List;
+//
+//// dfs + 백트래킹
+//// 0 인 모든 좌표를 zero 라는 ArrayList 에 담는다. <= 2차원배열 순회하면서 0 처리 X
+//// zero 의 0 번째 좌표부터 시작 ~ zero 전체 0인 모든 좌표를 다 채우면 정답
+////   0 인 y, x 자표에 1 ~ 9 의 숫자를 놓기 전에 visit 이용 가로, 세로, 3x3 영역에서 사용된 수를 제외한 후 놓아 본다.
+////   다음 0 인 좌표에 위 작업을 반복
+////   zero 의 모든 좌표에 수를 다 놓으면 종료
+//public class Main {
+//    static int[][] map = new int[9][9];
+//    static List<Node> zero = new ArrayList<>();
+//    static int size; // zero 의 size
+//    static boolean complete; // false
+//    static StringBuilder sb = new StringBuilder();
+//
+//    public static void main(String[] args) throws Exception {
+//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//
+//        for (int i = 0; i < 9; i++) {
+//            char[] line = br.readLine().toCharArray();
+//            for (int j = 0; j < 9; j++) {
+//                int n = line[j] - '0';
+//                map[i][j] = n;
+//                if (n == 0) zero.add(new Node(i, j));
+//            }
+//        }
+//
+//        size = zero.size(); // 0 인 갯수
+//        dfs(0); // zero 의 맨 앞 Node 객체
+//    }
+//
+//    static void dfs(int idx) { // zero ArrayList 의 인덱스
+//        // 기저조건
+//        if (complete) return;
+//
+//        // 기저조건
+//        if (idx == size) { // 모든 빈칸을 다 채웠다. 스도쿠가 완성.
+//
+//            complete = true; // 작업 완료 flag 설정
+//
+//            for (int i = 0; i < 9; i++) {
+//                for (int j = 0; j < 9; j++) {
+//                    sb.append(map[i][j]);
+//                }
+//                sb.append("\n");
+//            }
+//
+//            System.out.println(sb);
+//
+//            return;
+//        }
+//
+//        // 현재 idx 번째 0인 항목의 y,x 구한다.
+//        Node node = zero.get(idx);
+//        int y = node.y;
+//        int x = node.x;
+//
+//        // map 의 y,x 자리에 1 ~ 9 숫자를 채워 본다. (단, 가로,ㅍ세로, 3x3 에 사용되지 않은 수)
+//        boolean[] visit = new boolean[10]; // 0 dummy
+//
+//        // 가로에 사용된 수 check
+//        for (int i = 0; i < 9; i++) {
+//            if (map[y][i] != 0) visit[map[y][i]] = true;
+//        }
+//        // 세로에 사용된 수 check
+//        for (int i = 0; i < 9; i++) {
+//            if (map[i][x] != 0) visit[map[i][x]] = true;
+//        }
+//        // 3x3에 사용된 수 check
+//        int ny = (y / 3) * 3;
+//        int nx = (x / 3) * 3;
+//        int ny3 = ny + 3;
+//        int nx3 = nx + 3;
+//
+//        for (int i = ny; i < ny3; i++) {
+//            for (int j = nx; j < nx3; j++) {
+//                if (map[i][j] != 0) visit[map[i][j]] = true;
+//            }
+//        }
+//
+//        // visit 에 사용되지 않은 수에 대해 다음 재귀호출(다음 0인 자리)를 진행
+//        for (int i = 1; i <= 9; i++) {
+//            if (!visit[i]) {
+//                map[y][x] = i; // 빈 y,x  자리에 가능한 1 ~9 숫자 중 한 개를 사용하고 다음 재귀호출 이어간다. 재귀호출이 끝나면 다른 i 를 사용
+//                dfs(idx + 1);
+//                map[y][x] = 0;
+//            }
+//        }
+//    }
+//
+//
+//    // 0 ( 빈 ) 인 좌표를 표현, zero 담을 객체
+//    static class Node {
+//        int y, x;
+//
+//        Node(int y, int x) {
+//            this.y = y;
+//            this.x = x;
+//        }
+//    }
+//}
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-// 연산자의 순열을 구해야 한다.
-// 연산자의 순열의 경우의 수 마다 결과값을 계산해서 최대값, 최소값을 갱신한다.
-
 public class Main {
-    static int N; // N개로 이어진 수열 (EX) 1, 2 ...)
-    static int[] numberArray; // N개로 이어진 수열을 담는 배열
+    static int[][] sudoku = new int[9][9]; // 스도쿠 2차원 배열 선언
+    static List<Node> zeroList = new ArrayList<>(); // 0인 좌표, 즉 값을 할당해야하는 좌표값들을 담을 변수 선언
+    static boolean flag; // 백트래킹 때문에 조건을 만족하는 경우의 수까지 도달하더라도, 탐색을 계속해서 진행함, 그렇기에 마족하는 경우가 생기는 경우 탈출 조건 변수 선언
 
-    // 각 연산자마다 배열을 생성하여 사용하는거보다, 가변 리스트로 담아서 사용하는게 낫겟다는 판단을 함
-    static List<Integer> operationList = new ArrayList<>(); // 연산자를 담는 list
-    static List<Integer> selectOperationList = new ArrayList<>(); // 선택된 연산자를 담는 list
-    static boolean[] operationVisit; // 연산자 방문 여부 확인 배열
-
-    // 결과값으로 출력할 최대값과 최소값 변수 선언
-    static int maxValue = Integer.MIN_VALUE;
-    static int minValue = Integer.MAX_VALUE;
 
     public static void main(String[] args) throws IOException {
-        // 입추력 스트림 생성
+        // 입력 스트림 생성
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         StringTokenizer st;
+        // 변수 값 할당
+        for (int i = 0; i < 9; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < 9; j++) {
+                int value = Integer.parseInt(st.nextToken());
+                if (value == 0) zeroList.add(new Node(i, j));
+                sudoku[i][j] = value;
+            }
+        }
+        // 탐색 시작
+        dfs(0);
+        // 자원 반납
+        br.close();
+    }
+
+    static void printResult() throws IOException {
+        // 출력 스트림 생성
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         StringBuilder sb = new StringBuilder();
 
-        // 입력값 할당
-        N = Integer.parseInt(br.readLine());
-        numberArray = new int[N];
-        // numberArray 값 할당 (피연산자)
-        st = new StringTokenizer(br.readLine());
-        for (int i = 0; i < N; i++) numberArray[i] = Integer.parseInt(st.nextToken());
-
-        // 연산자 기호 값 할당
-        st = new StringTokenizer(br.readLine());
-
-        // 연산 횟수 계산
-        int plusCount = Integer.parseInt(st.nextToken());
-        int minusCount = Integer.parseInt(st.nextToken());
-        int multiCount = Integer.parseInt(st.nextToken());
-        int modCount = Integer.parseInt(st.nextToken());
-
-        // list 에 add ( + : 0, - : 1, * : 2, / : 3)
-        for (int i = 0; i < plusCount; i++) operationList.add(0);
-        for (int i = 0; i < minusCount; i++) operationList.add(1);
-        for (int i = 0; i < multiCount; i++) operationList.add(2);
-        for (int i = 0; i < modCount; i++) operationList.add(3);
-
-        // 방문 여부 확인용 변수 선언
-        operationVisit = new boolean[operationList.size()];
-
-        // operationList 의 순열 경우의 수 구하기
-        // 구하고자 하는 경우의 수는 N개 중에 N-1개 고르기
-        perm(0);
-
-        // 결과값 포맷 맞추기 > 최대값 (줄바꿈) 최소값 형식
-        sb.append(maxValue).append("\n");
-        sb.append(minValue).append("\n");
-
+        // 결과값 출력을 위한 StringBuilder 처리
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) sb.append(sudoku[i][j]).append(" ");
+            sb.append("\n");
+        }
         // 결과값 출력
         bw.write(sb.toString());
         bw.flush();
         bw.close();
-        br.close();
     }
 
-    // 순열 dfs
-    public static void perm(int depth) {
-        // 기저조건 설정
-        if (depth == N - 1) {
-            // 연산 결과 계산 실행
-            calcMinMaxValue();
+    static void dfs(int depth) throws IOException {
+        // kick > flag 가 필요한 이유가 중요.
+        if (flag) return;
+
+        // 기저조건 설정 > 0 부터 시작되기에, zeroList 의 size 만큼 크기가 되었을떄는
+        // 이미 모든 zero 좌표에 대해서 처리가 되었다고 볼 수 있음
+        if (depth == zeroList.size()) {
+            printResult();
+            flag = true;
             return;
         }
 
-        // 연산자를 뽑는 반복문
-        for (int i = 0; i < operationList.size(); i++) {
-            if (!operationVisit[i]) {
-                selectOperationList.add(operationList.get(i));
-                operationVisit[i] = true;
-                perm(depth + 1);
-                operationVisit[i] = false;
-                selectOperationList.remove(selectOperationList.size() - 1);
+        // 작성해야하는 스도쿠 값 좌표 추출
+        Node node = zeroList.get(depth);
+        int curY = node.y;
+        int curX = node.x;
+
+        // 숫자 방문 여부 변수 선언
+        boolean[] visitNumber = new boolean[10];
+        // 1. 현재 위치에 해당하는 좌표의 행에 존재하는 숫자 방문처리
+        checkRow(curY, visitNumber);
+        // 2 .현재 위치에 해당하는 좌표의 열에 존재하는 숫자 방문처리
+        checkCol(curX, visitNumber);
+        // 3. 현재 위치에 해당하는 좌표의 3곱하기에 존재하는 숫자 방문처리
+        checkThree(curY, curX, visitNumber);
+
+        // 1 ~ 9 까지의 숫자를 하나씪 넣어봄
+        for (int i = 1; i <= 9; i++) {
+            if (!visitNumber[i]) {
+                sudoku[curY][curX] = i;
+                dfs(depth + 1);
+                sudoku[curY][curX] = 0;
             }
         }
     }
 
-    // 순열로 선택된 연산자 계산처리
-    static void calcMinMaxValue() {
-        // 첫 변수값 할당
-        int result = numberArray[0];
-
-        // 마지막 연산과정은 제외함
-        for (int i = 1; i < numberArray.length - 1; i++) {
-            int number = numberArray[i];
-            int operation = selectOperationList.get(i - 1);
-            result = calc(result, number, operation);
+    // 각 좌표의 행에 위차하는곳에 존재하는 숫자 확인
+    static void checkRow(int y, boolean[] visitNumber) {
+        for (int i = 0; i < 9; i++) {
+            int value = sudoku[y][i];
+            if (value != 0) visitNumber[value] = true;
         }
-
-        // 마지막 연산과정 처리
-        result = calc(
-                result,
-                numberArray[numberArray.length - 1],
-                selectOperationList.get(selectOperationList.size() - 1)
-        );
-
-        // 최대값 최소값 계산
-        maxValue = Math.max(result, maxValue);
-        minValue = Math.min(result, minValue);
     }
 
-    static int calc(int number1, int number2, int operation) {
-        // 리턴값 선언
-        int result = 0;
-        // 연산자 마다 다르게 처리
-        switch (operation) {
-            // 덧셈
-            case 0:
-                result = number1 + number2;
-                break;
-            // 뺄셈
-            case 1:
-                result = number1 - number2;
-                break;
-            // 곱셈
-            case 2:
-                result = number1 * number2;
-                break;
-            // 나눗셈
-            case 3:
-                result = number1 / number2;
-                break;
-            default:
-                break;
+    // 각 좌표의 열에 위차하는곳에 존재하는 숫자 확인
+    static void checkCol(int x, boolean[] visitNumber) {
+        for (int i = 0; i < 9; i++) {
+            int value = sudoku[i][x];
+            if (value != 0) visitNumber[value] = true;
         }
-        // 결과값 반환
-        return result;
+    }
+
+    // 각 좌표의 3 곱하기 3에  위차하는곳에 존재하는 숫자 확인
+    static void checkThree(int y, int x, boolean[] visitNumber) {
+        int ny = (y / 3) * 3;
+        int nx = (x / 3) * 3;
+        for (int i = ny; i < ny + 3; i++) {
+            for (int j = nx; j < nx + 3; j++) {
+                int value = sudoku[i][j];
+                if (value != 0) visitNumber[value] = true;
+            }
+        }
+    }
+
+    // 좌표의 위치를 담을 내부 클래스 선언
+    static class Node {
+        int y; // 행
+        int x; // 열
+
+        public Node(int y, int x) {
+            this.y = y;
+            this.x = x;
+        }
     }
 }
 
